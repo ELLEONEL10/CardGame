@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.11.0/.schema/devbox.schema.json",
+  "packages": [
+    "jdt-language-server@latest",
+    "jdk@18.0.0",
+    "onefetch@latest",
+    "maven@latest",
+    "just@latest",
+    "zsh@latest",
+    "oh-my-zsh@latest",
+    "helix@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "onefetch",
+      "zsh"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ]
+    }
+  }
+}
