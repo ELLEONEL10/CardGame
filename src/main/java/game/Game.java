@@ -9,22 +9,26 @@ import java.util.Stack;
 import java.util.function.Consumer;
 
 import cards.Card;
+import cards.Suit;
 
 public class Game {
 
-  public enum VCard {
-    // Since actual card does not hold it's type we do it here
-    CLUBS(0), DIAMONDS(1), HEARTS(2), SPADES(3);
+  public class VCard {
+    // Index of card among registered cards
+    private int cardIdx;
+    private Suit suit;
 
-    VCard(int i) {
+    public int getCardIdx() {
+      return cardIdx;
     }
 
-    // Index of card among registered cards
-    public int cardIdx;
+    public Suit getSuit() {
+      return suit;
+    }
 
-    // Create instance of this enum with indexing
-    public static VCard fromId(int id) {
-      return values()[id];
+    public VCard(int cardIdx, Suit suit) {
+      this.cardIdx = cardIdx;
+      this.suit = suit;
     }
   }
 
@@ -155,7 +159,8 @@ public class Game {
        * Poll cards on start of every round. <br>
        * <hr>
        * {@link Event#winner} : null <br>
-       * {@link Event#cardAmount } : Integer - Poll 2 (4 in general) cards from every player's deck to hidden deck if war is declared <br>
+       * {@link Event#cardAmount } : Integer - Poll 2 (4 in general) cards from every
+       * player's deck to hidden deck if war is declared <br>
        * {@link Event#whiteCard} : VCard - Polled card from white deck <br>
        * {@link Event#blackCard} : VCard - Polled card from black deck
        */
@@ -207,14 +212,15 @@ public class Game {
 
     private Queue<Event> evQueue = new LinkedList<Game.EventQueue.Event>();
 
-    /** 
-    * Iterate over all evens in queue <br>
-    * NOTE: Once readed, queue is being flushed out. <br><br>
-    * {@code events.forEach((e) -> println(e)) }
-    */
-    public void forEach(Consumer<? super Event> action){
+    /**
+     * Iterate over all evens in queue <br>
+     * NOTE: Once readed, queue is being flushed out. <br>
+     * <br>
+     * {@code events.forEach((e) -> println(e)) }
+     */
+    public void forEach(Consumer<? super Event> action) {
       evQueue.forEach(action);
-      evQueue.clear();     
+      evQueue.clear();
     }
   }
 
