@@ -186,7 +186,7 @@ class EventQueue {
     evQueue.clear();
   }
 
-  protected void addEvent(Event e){
+  protected void add(Event e){
    evQueue.add(e);
   }
 }
