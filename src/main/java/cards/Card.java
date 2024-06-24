@@ -1,18 +1,18 @@
 package cards;
 
 public abstract class Card {
-  private static String ASSETS_PATH = "assets/";
+  private static String PREFIX = "assets/cards/";
 
   public String getAssetPath(Suit suit) {
     switch (suit) {
       case CLUBS:
-        return ASSETS_PATH + this.getClass().getSimpleName() + "/clubs.png";
+        return PREFIX + this.getClass().getSimpleName().toLowerCase() + "/clubs.png";
       case DIAMONDS:
-        return ASSETS_PATH + this.getClass().getSimpleName() + "/diamonds.png";
+        return PREFIX + this.getClass().getSimpleName().toLowerCase() + "/diamonds.png";
       case HEARTS:
-        return ASSETS_PATH + this.getClass().getSimpleName() + "/hearts.png";
+        return PREFIX + this.getClass().getSimpleName().toLowerCase() + "/hearts.png";
       case SPADES:
-        return ASSETS_PATH + this.getClass().getSimpleName() + "/spades.png";
+        return PREFIX + this.getClass().getSimpleName().toLowerCase() + "/spades.png";
       default:
         return null;
     }
