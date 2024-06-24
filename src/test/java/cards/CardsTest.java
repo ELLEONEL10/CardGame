@@ -18,15 +18,20 @@ public class CardsTest{
     assertEquals("C2", defaultCards.cards[0].getClass().getSimpleName() );
     assertEquals("C3", defaultCards.cards[1].getClass().getSimpleName() );
     assertEquals("C4", defaultCards.cards[2].getClass().getSimpleName() );
-    assertEquals("Queen", defaultCards.cards[11].getClass().getSimpleName() );
-    assertEquals("King", defaultCards.cards[12].getClass().getSimpleName() );
-    assertEquals("Ace", defaultCards.cards[13].getClass().getSimpleName() );
+    assertEquals("Queen", defaultCards.cards[10].getClass().getSimpleName() );
+    assertEquals("King", defaultCards.cards[11].getClass().getSimpleName() );
+    assertEquals("Ace", defaultCards.cards[12].getClass().getSimpleName() );
+  }
+
+  @Test
+  public void DefaultCardsAmountTest() {
+    var defaultCards = new Default();
+    assertEquals(13, defaultCards.cards.length);
   }
 
   @Test
   public void DefaultCardsPathsTest() {
-
-    var king = new Default().cards[12];
+    var king = new Default().cards[11];
     assertEquals("assets/cards/king/diamonds.png", king.getAssetPath(Suit.DIAMONDS) );
     assertEquals("assets/cards/king/clubs.png", king.getAssetPath(Suit.CLUBS) );
     assertEquals("assets/cards/king/hearts.png", king.getAssetPath(Suit.HEARTS) );

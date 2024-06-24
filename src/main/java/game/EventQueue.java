@@ -173,7 +173,7 @@ class EventQueue {
 
   }
 
-  private Queue<Event> evQueue = new LinkedList<Event>();
+  protected Queue<Event> evQueue = new LinkedList<Event>();
 
   /**
    * Iterate over all evens in queue <br>
@@ -184,5 +184,9 @@ class EventQueue {
   public void forEach(Consumer<? super Event> action) {
     evQueue.forEach(action);
     evQueue.clear();
+  }
+
+  protected void addEvent(Event e){
+   evQueue.add(e);
   }
 }
