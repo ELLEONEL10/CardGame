@@ -23,18 +23,52 @@ public class Game {
     List<VCard> invisible;
 
     // Current player's card on table
-    VCard cardWhite;
-    VCard cardBlack;
+    private VCard cardWhite;
+
+
+    private VCard cardBlack;
 
     // Player's decks
     // We use queue, since it is first input -> first output
     // And we can put new cards in bottom of deck
-    protected Queue<VCard> deckWhite;
-    protected Queue<VCard> deckBlack;
+    private Queue<VCard> deckWhite;
+    private Queue<VCard> deckBlack;
     // Is war ongoing
-    protected boolean isWar = false;
+    private boolean isWar = false;
     // Is game over
-    protected boolean isFinished = false;
+    private  boolean isFinished = false;
+
+    public VCard getCardWhite() {
+      return cardWhite;
+    }
+
+    public VCard getCardBlack() {
+      return cardBlack;
+    }
+
+    public boolean isWar() {
+      return isWar;
+    }
+
+    public boolean isFinished() {
+      return isFinished;
+    }
+
+    protected void placeCards(VCard whiteCard, VCard blackCard) {
+      cardBlack = blackCard;
+      cardWhite = whiteCard;
+    }
+
+    protected VCard pollCard(Player player) {
+      switch (player) {
+        case BLACK:
+          return deckBlack.poll();
+        case WHITE:
+          return deckWhite.poll();
+        default:
+          return null;
+      }
+    }
   }
 
   public List<Card> registeredCards;
@@ -91,19 +125,21 @@ public class Game {
       // Error
     }
 
-    var vCardBlack = table.deckBlack.poll();
-    var vCardWhite = table.deckWhite.poll();
+    // Poll visible cards
+    var vCardWhite = table.pollCard(Player.WHITE);
+    var vCardBlack = table.pollCard(Player.BLACK);
 
-    table.cardBlack = vCardBlack;
-    table.cardWhite = vCardWhite;
+    // Place on table
+    table.placeCards(vCardWhite, vCardBlack);
 
-    if (table.isWar) {
-      for (var i = 0; i < 3; i++) {
-        table.invisible.add(table.deckBlack.poll());
-        table.invisible.add(table.deckWhite.poll());
-      }
-    }
+    // Pull 4 cards if it is a war
+    if (table.isWar)
+      // Player index
+      for (var p = 0; p < 2; p++)
+        for (var _i = 0; _i < 2; _i++)
+          table.invisible.add(table.pollCard(Player.fromIdx(p)));
 
+    // Detect if someone ran out of cards
     if (vCardBlack == null) {
       // table.setWinner(Player.WHITE);
       table.isFinished = true;
@@ -120,6 +156,7 @@ public class Game {
       events.add(e);
     }
 
+    // Log to event
     var e = Event.POLL_CARDS;
 
     if (table.isWar)
@@ -127,11 +164,10 @@ public class Game {
     else
       e.cardAmount = 0;
 
-    e.blackCard = table.cardBlack;
-    e.whiteCard = table.cardWhite;
+    e.blackCard = table.getCardBlack();
+    e.whiteCard = table.getCardWhite();
 
     events.add(e);
-
   }
 
   // Perform actions according to current table
@@ -140,7 +176,7 @@ public class Game {
     events.add(Event.ROUND_START);
 
     poll_cards();
- 
+
     // Get current player's visible cards
     var vCardWhite = table.cardWhite;
     var vCardBlack = table.cardBlack;
@@ -149,73 +185,47 @@ public class Game {
 
     // Compare cards
     if (vCardWhite == vCardBlack) {
+
       // Starting the war
       table.isWar = true;
 
+      // Events
       events.add(compareEv);
       events.add(Event.WAR_START);
-      // // There is no winner
-      // table.setWinner(null);
-    }
-    // VCard.cardIdx does not just referse to registered card
-    // But also represents it's priority
-    // So we can use this index to determine which card is stronger
-    // It is very fast operation, since we do that without looking up in registered
-    // cards
-    else if (vCardBlack.cardIdx > vCardWhite.cardIdx) {
-      compareEv.winner = Player.BLACK;
-      events.add(compareEv);
-      table.isWar = false;
-      events.add(Event.WAR_END);
+    } else {
+      // VCard.cardIdx does not just referse to registered card
+      // But also represents it's priority
+      // So we can use this index to determine which card is stronger
+      // It is very fast operation, since we do that without looking up in registered
+      // cards
+      var whiteWon = (vCardBlack.cardIdx < vCardWhite.cardIdx) ? true : false;
+      var winner = (whiteWon) ? Player.WHITE : Player.BLACK;
+      var winnerDeck = (whiteWon) ? table.deckWhite : table.deckBlack;
 
+      // Events
       var collectEv = Event.COLLECT_CARDS;
 
-      collectEv.winner = Player.BLACK;
+      collectEv.winner = winner;
       collectEv.blackCard = vCardBlack;
       collectEv.whiteCard = vCardWhite;
       collectEv.cardAmount = table.invisible.size();
 
+      compareEv.winner = winner;
+
+      events.add(compareEv);
+      events.add(Event.WAR_END);
       events.add(collectEv);
 
+      table.isWar = false;
       // Push back cards to bottom of deck
-      table.deckBlack.add(vCardBlack);
-      table.deckBlack.add(vCardWhite);
+      winnerDeck.add(vCardBlack);
+      winnerDeck.add(vCardWhite);
 
       // Iterate over all invisible cards and add them as well
       // If there is no war, there should be no invisible cards
       // And the list is empty
       for (var vCard : table.invisible)
-        table.deckBlack.add(vCard);
-
-      // table.setWinner(Player.BLACK);
-
-    }
-    // TODO: DRY
-    else if (vCardBlack.cardIdx < vCardWhite.cardIdx) {
-
-      compareEv.winner = Player.WHITE;
-      events.add(compareEv);
-
-      table.isWar = false;
-      events.add(Event.WAR_END);
-
-      var collectEv = Event.COLLECT_CARDS;
-
-      collectEv.winner = Player.WHITE;
-      collectEv.blackCard = vCardBlack;
-      collectEv.whiteCard = vCardWhite;
-      collectEv.cardAmount = table.invisible.size();
-
-      events.add(collectEv);
-      // Push back cards to bottom of deck
-      table.deckWhite.add(vCardBlack);
-      table.deckWhite.add(vCardWhite);
-
-      // Iterate over all invisible cards and add them as well
-      // If there is no war, there should be no invisible cards
-      // And the list is empty
-      for (var vCard : table.invisible)
-        table.deckBlack.add(vCard);
+        winnerDeck.add(vCard);
     }
 
     events.add(Event.ROUND_FINISH);

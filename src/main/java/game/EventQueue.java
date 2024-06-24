@@ -50,6 +50,10 @@ class EventQueue {
     Player(int i) {
      idx = i;
     }
+
+    public static Player fromIdx(int i){
+     return values()[i];
+    }
   }
 
   public enum Event {
