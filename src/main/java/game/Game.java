@@ -1,13 +1,19 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
 import cards.Card;
+import cards.Default;
 import cards.Suit;
+import game.EventQueue.Event;
+import game.EventQueue.Player;
 
 public class Game {
   // Representation of physical ingame table
@@ -36,19 +42,32 @@ public class Game {
   Table table = new Table();
   EventQueue events = new EventQueue();
 
-  public void register(List<Card> cards) {
+  public Game() {
+    registeredCards = Arrays.asList(new Default().cards);
+  }
+
+  public Game(Card[] cards) {
+    registeredCards = new ArrayList<Card>(Arrays.asList(cards));
+  }
+
+  public Game(List<Card> cards) {
     registeredCards = cards;
   }
 
-  public void register(Card card) {
-    registeredCards.add(card);
+  public void dispatchDecks() {
+    dispatchDecks(new Random().nextInt(), false);
   }
 
-  public void dispatchDecks() {
-    dispatchDecks(new Random().nextInt());
+  public void dispatchDecksNoShuffle() {
+    dispatchDecks(0, true);
   }
 
   public void dispatchDecks(int seed) {
+    dispatchDecks(seed, false);
+  }
+
+  private void dispatchDecks(int seed, boolean noShuffle) {
+
     var cards = new Stack<VCard>();
     // Iterate over all types of same card.
     for (var suitId = 0; suitId < 4; suitId++)
@@ -57,7 +76,13 @@ public class Game {
         // Add VCard to temporary list.
         cards.add(new VCard(cardPrecendence, Suit.fromId(suitId)));
 
-    Collections.shuffle(cards, new Random(seed));
+    if (!noShuffle)
+      Collections.shuffle(cards, new Random(seed));
+
+    System.err.println("jlfkjasldkfjlaskdfjlskfjslkdjslfdkj" + cards.size());
+
+    table.deckBlack = new LinkedList<VCard>(cards.subList(0, (cards.size() / 2)));
+    table.deckWhite = new LinkedList<VCard>(cards.subList((cards.size() / 2), cards.size()));
   }
 
   private void poll_cards() {
@@ -82,25 +107,53 @@ public class Game {
     if (vCardBlack == null) {
       // table.setWinner(Player.WHITE);
       table.isFinished = true;
+      var e = Event.GAME_FINISH;
+      e.winner = Player.WHITE;
+      events.add(e);
     }
 
     if (vCardWhite == null) {
       // table.setWinner(Player.BLACK);
       table.isFinished = true;
+      var e = Event.GAME_FINISH;
+      e.winner = Player.BLACK;
+      events.add(e);
     }
+
+    var e = Event.POLL_CARDS;
+
+    if (table.isWar)
+      e.cardAmount = 4;
+    else
+      e.cardAmount = 0;
+
+    e.blackCard = table.cardBlack;
+    e.whiteCard = table.cardWhite;
+
+    events.add(e);
+
   }
 
   // Perform actions according to current table
   public void playRound() {
 
+    events.add(Event.ROUND_START);
+
+    poll_cards();
+ 
     // Get current player's visible cards
     var vCardWhite = table.cardWhite;
     var vCardBlack = table.cardBlack;
+
+    var compareEv = Event.COMPARE_CARDS;
 
     // Compare cards
     if (vCardWhite == vCardBlack) {
       // Starting the war
       table.isWar = true;
+
+      events.add(compareEv);
+      events.add(Event.WAR_START);
       // // There is no winner
       // table.setWinner(null);
     }
@@ -110,6 +163,19 @@ public class Game {
     // It is very fast operation, since we do that without looking up in registered
     // cards
     else if (vCardBlack.cardIdx > vCardWhite.cardIdx) {
+      compareEv.winner = Player.BLACK;
+      events.add(compareEv);
+      table.isWar = false;
+      events.add(Event.WAR_END);
+
+      var collectEv = Event.COLLECT_CARDS;
+
+      collectEv.winner = Player.BLACK;
+      collectEv.blackCard = vCardBlack;
+      collectEv.whiteCard = vCardWhite;
+      collectEv.cardAmount = table.invisible.size();
+
+      events.add(collectEv);
 
       // Push back cards to bottom of deck
       table.deckBlack.add(vCardBlack);
@@ -125,7 +191,22 @@ public class Game {
 
     }
     // TODO: DRY
-    else if (vCardBlack.cardIdx < vCardWhite.cardIdx ) {
+    else if (vCardBlack.cardIdx < vCardWhite.cardIdx) {
+
+      compareEv.winner = Player.WHITE;
+      events.add(compareEv);
+
+      table.isWar = false;
+      events.add(Event.WAR_END);
+
+      var collectEv = Event.COLLECT_CARDS;
+
+      collectEv.winner = Player.WHITE;
+      collectEv.blackCard = vCardBlack;
+      collectEv.whiteCard = vCardWhite;
+      collectEv.cardAmount = table.invisible.size();
+
+      events.add(collectEv);
       // Push back cards to bottom of deck
       table.deckWhite.add(vCardBlack);
       table.deckWhite.add(vCardWhite);
@@ -135,9 +216,8 @@ public class Game {
       // And the list is empty
       for (var vCard : table.invisible)
         table.deckBlack.add(vCard);
-
-      // state.setWinner(Player.BLACK);
-
     }
+
+    events.add(Event.ROUND_FINISH);
   }
 }
