@@ -3,8 +3,10 @@ package game;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Stack;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,24 @@ public class GameTest {
     assertEquals(game.table.deckWhite.size(), game.table.deckBlack.size());
     assertEquals(26, game.table.deckBlack.size());
     assertEquals(26, game.table.deckWhite.size());
+  }
+  @Test
+  public void dispatchDecksNoShuffleFullControlTest(){
+    var game = new Game();
+
+    game.dispatchDecksNoShuffle();
+
+    var deckBlack = new int[game.table.deckBlack.size()];
+    var deckWhite = new int[game.table.deckWhite.size()];
+
+    for (var i = 0; i < deckBlack.length; i++){
+      deckBlack[i] = game.table.deckBlack.poll().cardIdx;
+      deckWhite[i] = game.table.deckWhite.poll().cardIdx;
+     }
+    
+    assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},  deckBlack);
+    assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},  deckWhite);
+    assertArrayEquals(deckBlack, deckWhite);
   }
 
   @Test
