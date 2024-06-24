@@ -155,9 +155,9 @@ public class Game {
        * Poll cards on start of every round. <br>
        * <hr>
        * {@link Event#winner} : null <br>
-       * {@link Event#cardAmount } : null <br>
-       * {@link Event#whiteCard} : null <br>
-       * {@link Event#blackCard} : null
+       * {@link Event#cardAmount } : Integer - Poll 2 (4 in general) cards from every player's deck to hidden deck if war is declared <br>
+       * {@link Event#whiteCard} : VCard - Polled card from white deck <br>
+       * {@link Event#blackCard} : VCard - Polled card from black deck
        */
       POLL_CARDS,
 
@@ -186,7 +186,7 @@ public class Game {
       COLLECT_CARDS,
 
       /**
-       * Compare cards and determine better winner of the round. <br>
+       * Compare cards and determine winner of the round. <br>
        * <hr>
        * {@link Event#winner} : Player | null - winner of the round. If there is no
        * winner, than its a draw and value is null <br>
