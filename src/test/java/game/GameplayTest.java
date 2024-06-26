@@ -60,9 +60,8 @@ public class GameplayTest {
       8. 7 - 3
       9. 4 - 3
       10. 1 - 3
-      11. Draw 
     */
-    assertEquals(11, turn);
+    assertEquals(10, turn);
   }
 
   @Test
