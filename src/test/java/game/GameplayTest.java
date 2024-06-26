@@ -104,7 +104,46 @@ public class GameplayTest {
 
     assertEquals(52, Integer.max(game.table.deckBlack.size(), game.table.deckWhite.size()));
     assertEquals(0, Integer.min(game.table.deckBlack.size(), game.table.deckWhite.size()));
+  @Test
+  public void finalDeckNullCheckTest() {
+    var game = new Game();
+    game.dispatchDecks(0);
 
-    // TODO: Iterate over all and check if they are all unique
+    while (!game.table.isFinished()) 
+      game.playRound();
+
+    game.table.deckBlack.forEach(e -> {
+      if (e == null)
+        assertTrue(false, "One element in black deck is null");
+    });
+    game.table.deckWhite.forEach(e -> {
+      if (e == null)
+        assertTrue(false, "One element in white deck is null");
+    });
+  }
+  @Test
+  public void finalDeckUniqueTest() {
+    var game = new Game();
+    game.dispatchDecks(0);
+
+    while (!game.table.isFinished()) 
+      game.playRound();
+
+    var set = new HashSet<String>();
+
+    for ( var vCard : game.table.deckBlack){
+      var card = game.registeredCards.get(vCard.cardIdx);
+      var path = card.getAssetPath(vCard.suit);
+      if (set.contains(path ))
+        assertTrue(false, "Black deck contains non unique elements " + path );
+      set.add(path);
+    }
+    for ( var vCard : game.table.deckWhite){
+      var card = game.registeredCards.get(vCard.cardIdx);
+      var path = card.getAssetPath(vCard.suit);
+      if (set.contains(path))
+        assertTrue(false, "White deck contains non unique elements " + path );
+      set.add(path);
+    }
   }
 }
