@@ -45,6 +45,17 @@ public class Game {
       return cardBlack;
     }
 
+    private Queue<VCard> getDeck(Player player) {
+      switch (player) {
+        case BLACK:
+          return deckBlack;
+        case WHITE:
+          return deckWhite;
+        default:
+          return null;
+      }
+    }
+
     public boolean isWar() {
       return isWar;
     }
