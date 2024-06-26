@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import game.EventQueue.Event;
+import game.EventQueue.Player;
 
-public class EventQueueTest{
+public class EventQueueTest {
 
   @Test
   public void orderTest() {
@@ -19,7 +20,7 @@ public class EventQueueTest{
     queue.add(Event.GAME_FINISH);
 
     var i = 0;
-     events.forEach(e -> {
+    events.forEach(e -> {
       if (i == 0 && e != Event.GAME_START)
         // It works
         assertTrue(true, "Order is wrong, first element is " + e + ", but should be Event.GAME_START");
