@@ -138,6 +138,39 @@ public class Game {
   }
 
   // Finish game if one player has no cards left
+  /**
+   * Checks if given cards are nulls and if there is atleast one is null, returns
+   * true
+   */
+  private boolean isGameOver(VCard vCardWhite, VCard vCardBlack) {
+    if (vCardBlack == null || vCardWhite == null) {
+
+      Player winner;
+      // Assign winner
+      // Winner can be only one player or none
+      // So if first card is not null, than second will be null
+      winner = (vCardWhite != null) ? Player.WHITE : null;
+      winner = (vCardBlack != null) ? Player.BLACK : null;
+
+      // Finish the game
+      table.finish();
+
+      // Can be null
+      var winnerDeck = table.getDeck(winner);
+
+      // If there is no winner, than invisible deck is not moving anywhere
+      // Since that is a draw, we cannot move all the cards to specific player
+      // That results each player to have zero cards and all cards move to invisible stack
+      // Probability of Draw is almost zero and the only case scenario with draw i found when players have identical stacks at the beginning
+      // To get Identical decks you need to call [Game.dispatchDecksNoShuffle]
+      if (winner != null) {
+        for (var vCard : table.invisible)
+
+      events.add(Event.ROUND_FINISH);
+      events.add(Event.create(Event.GAME_FINISH, winner, null, null, null));
+      return true;
+    }
+    return false;
   private void finishGame(){
     
   }
