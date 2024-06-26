@@ -62,7 +62,7 @@ class EventQueue {
      * Indicates if game was started.
      * <hr>
      * {@link Event#winner} : null <br>
-     * {@link Event#cardAmount} : null
+     * {@link Event#cardAmount} : null <br>
      * {@link Event#whiteCard} : null <br>
      * {@link Event#blackCard} : null
      */
