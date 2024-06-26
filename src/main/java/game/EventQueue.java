@@ -176,7 +176,7 @@ class EventQueue {
     VCard blackCard = null;
 
     /** Helper function to create event fast */
-    public static Event newEvent(Event e, Player winner, Integer cardAmount, VCard whiteCard, VCard blackCard){
+    public static Event create(Event e, Player winner, Integer cardAmount, VCard whiteCard, VCard blackCard){
      e.winner = winner;
      e.cardAmount = cardAmount;
      e.whiteCard = whiteCard;
