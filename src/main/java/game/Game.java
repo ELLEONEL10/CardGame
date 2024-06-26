@@ -78,7 +78,7 @@ public class Game {
     }
 
     /** Move cards to hidden deck */
-    protected void hideCards(VCard whiteCard, VCard blackCard){
+    protected void hideCards(VCard whiteCard, VCard blackCard) {
       invisible.add(whiteCard);
       invisible.add(blackCard);
     }
@@ -142,6 +142,10 @@ public class Game {
   }
 
   // Finish game if one player has no cards left
+  private void finishGame() {
+
+  }
+
   /**
    * Checks if given cards are nulls and if there is atleast one is null, returns
    * true
@@ -164,23 +168,31 @@ public class Game {
 
       // If there is no winner, than invisible deck is not moving anywhere
       // Since that is a draw, we cannot move all the cards to specific player
-      // That results each player to have zero cards and all cards move to invisible stack
-      // Probability of Draw is almost zero and the only case scenario with draw i found when players have identical stacks at the beginning
+      // That results each player to have zero cards and all cards move to invisible
+      // stack
+      // Probability of Draw is almost zero and the only case scenario with draw i
+      // found when players have identical stacks at the beginning
       // To get Identical decks you need to call [Game.dispatchDecksNoShuffle]
       if (winner != null) {
         for (var vCard : table.invisible)
           winnerDeck.add(vCard);
         // Cards from invisible deck are moved out
         table.invisible.clear();
+        // Add one of incoming cards to winner's stack
+        winnerDeck.add((winner == Player.WHITE) ? vCardWhite : vCardBlack);
+        // Add visible cards on table to winner's stack
+        winnerDeck.add(table.getCardBlack());
+        winnerDeck.add(table.getCardWhite());
       }
 
       events.add(Event.ROUND_FINISH);
       events.add(Event.create(Event.GAME_FINISH, winner, null, null, null));
+
+      // Indicate that game is over
       return true;
     }
+    // Indicate that game is not over yet
     return false;
-  private void finishGame(){
-    
   }
 
   private void pollCards() {
@@ -295,7 +307,32 @@ public class Game {
 
     events.add(Event.ROUND_START);
 
-    pollCards();
+    // pollCards();
+
+    {
+      var vCardWhite = table.pollCard(Player.WHITE);
+      var vCardBlack = table.pollCard(Player.BLACK);
+
+      if (isGameOver(vCardWhite, vCardBlack))
+        return;
+
+      table.placeCards(vCardWhite, vCardBlack);
+
+    }
+    {
+      if (table.isWar()) {
+        for (var i = 0; i < 2; i++) {
+          var vCardWhite = table.pollCard(Player.WHITE);
+          var vCardBlack = table.pollCard(Player.BLACK);
+
+          if (isGameOver(vCardWhite, vCardBlack))
+            return;
+
+          table.invisible.add(vCardBlack);
+          table.invisible.add(vCardWhite);
+        }
+      }
+    }
 
     if (table.isFinished)
       return;
@@ -323,8 +360,7 @@ public class Game {
         events.add(Event.WAR_START);
 
       // Hide
-      table.invisible.add(vCardWhite);
-      table.invisible.add(vCardBlack);
+      table.hideCards(vCardBlack, vCardWhite);
 
       events.add(Event.create(Event.HIDE_CARDS, null, null, vCardWhite, vCardBlack));
     } else {
