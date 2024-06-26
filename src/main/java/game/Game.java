@@ -116,7 +116,7 @@ public class Game {
     table.deckWhite = new LinkedList<VCard>(cards.subList((cards.size() / 2), cards.size()));
   }
 
-  private void poll_cards() {
+  private void pollCards() {
 
     // if (table.cardBlack != null || table.cardWhite != null)
     // System.err.println("Not empty table on fresh turn");
@@ -171,6 +171,7 @@ public class Game {
 
     events.add(Event.ROUND_START);
 
+    pollCards();
     poll_cards();
 
     if (table.isFinished)
