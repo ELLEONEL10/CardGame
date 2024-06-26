@@ -129,23 +129,27 @@ public class Game {
     // Poll visible cards
     var vCardWhite = table.pollCard(Player.WHITE);
     var vCardBlack = table.pollCard(Player.BLACK);
+    if (vCardBlack == null && vCardWhite == null) {
 
-    // Place on table
-    table.placeCards(vCardWhite, vCardBlack);
-
-    // Pull 4 cards if it is a war
-    if (table.isWar)
-      // Player index
-      for (var p = 0; p < 2; p++)
-        for (var _i = 0; _i < 2; _i++)
-          table.invisible.add(table.pollCard(Player.fromIdx(p)));
-
+      table.isFinished = true;
+      var e = Event.GAME_FINISH;
+      e.winner = null;
+      events.add(e);
+      System.out.println("polling cards and draw");
+      return;
+    }
     // Detect if someone ran out of cards
-    if (vCardBlack == null) {
+    else if (vCardBlack == null) {
       table.isFinished = true;
       var e = Event.GAME_FINISH;
       e.winner = Player.WHITE;
       events.add(e);
+      for (var vCard : table.invisible)
+        table.deckWhite.add(vCard);
+
+      table.deckWhite.add(vCardWhite);
+      System.out.println("polling cards and White wins");
+      return;
     }
 
     else if (vCardWhite == null) {
@@ -153,20 +157,81 @@ public class Game {
       var e = Event.GAME_FINISH;
       e.winner = Player.BLACK;
       events.add(e);
+      for (var vCard : table.invisible)
+        table.deckBlack.add(vCard);
+
+      table.deckBlack.add(vCardBlack);
+      System.out.println("polling cards and Black wins");
+      return;
     }
 
-    // Log to event
-    var e = Event.POLL_CARDS;
+    // Place on table
+    table.placeCards(vCardWhite, vCardBlack);
 
+    // Pull 4 cards if it is a war
     if (table.isWar)
-      e.cardAmount = 4;
-    else
-      e.cardAmount = 0;
+      for (var _i = 0; _i < 2; _i++) {
+        var invCardW = table.pollCard(Player.WHITE);
+        var invCardB = table.pollCard(Player.BLACK);
+        if (invCardW == null && invCardB == null) {
+          // Draw
+          table.isFinished = true;
+          var e = Event.GAME_FINISH;
+          e.winner = null;
+          events.add(e);
+          System.out.println("War polling cards and draw");
+          return;
 
-    e.blackCard = table.getCardBlack();
-    e.whiteCard = table.getCardWhite();
+        } else if (invCardW == null) {
+          table.isFinished = true;
+          var e = Event.GAME_FINISH;
+          e.winner = Player.BLACK;
+          events.add(e);
+          for (var vCard : table.invisible)
+            table.deckBlack.add(vCard);
 
-    events.add(e);
+          table.deckBlack.add(invCardB);
+          table.deckBlack.add(table.cardBlack);
+          table.deckBlack.add(table.cardWhite);
+          // Clear if not invisible
+          table.invisible.clear();
+          System.out.println("War polling cards and Black wins");
+          return;
+        } else if (invCardB == null) {
+          table.isFinished = true;
+          var e = Event.GAME_FINISH;
+          e.winner = Player.WHITE;
+          events.add(e);
+          for (var vCard : table.invisible)
+            table.deckWhite.add(vCard);
+
+          table.deckWhite.add(invCardW);
+          table.deckWhite.add(table.cardBlack);
+          table.deckWhite.add(table.cardWhite);
+
+          System.out.println("War polling cards and White wins");
+          table.invisible.clear();
+          return;
+        }
+
+        table.invisible.add(invCardB);
+        table.invisible.add(invCardW);
+      }
+
+    {
+      // Log to event
+      var e = Event.POLL_CARDS;
+
+      if (table.isWar)
+        e.cardAmount = 4;
+      else
+        e.cardAmount = 0;
+
+      e.blackCard = table.getCardBlack();
+      e.whiteCard = table.getCardWhite();
+
+      events.add(e);
+    }
   }
 
   // Perform actions according to current table
@@ -193,7 +258,7 @@ public class Game {
       table.isWar = true;
 
       // Events
-      // TODO: Debug 
+      // TODO: Debug
       // For some reason java defaulting to something else instead of null
       compareEv.winner = null;
       events.add(compareEv);
@@ -229,7 +294,7 @@ public class Game {
       collectEv.whiteCard = vCardWhite;
 
       // if (vCardBlack == vCardWhite)
-        // System.err.println("Woogie-boogie, cards are the same");
+      // System.err.println("Woogie-boogie, cards are the same");
       collectEv.cardAmount = table.invisible.size();
 
       compareEv.winner = winner;
