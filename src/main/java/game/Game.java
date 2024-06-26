@@ -71,6 +71,7 @@ public class Game {
       isFinished = true;
     }
 
+    /** Place given card on visible spots on table */
     protected void placeCards(VCard whiteCard, VCard blackCard) {
       cardBlack = blackCard;
       cardWhite = whiteCard;
