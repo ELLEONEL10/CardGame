@@ -177,8 +177,8 @@ public class Game {
       return;
 
     // Get current player's visible cards
-    var vCardWhite = table.cardWhite;
-    var vCardBlack = table.cardBlack;
+    var vCardWhite = table.getCardWhite();
+    var vCardBlack = table.getCardBlack();
 
     var compareEv = Event.COMPARE_CARDS;
 
