@@ -17,7 +17,7 @@ This is simple card game. It is a university homework focused on working in team
 
 ## Setup
 1. Install [devbox](https://www.jetify.com/devbox/docs/installing_devbox/)
-2. Clone this repo to your desktop and run `devbox shell` enter deterministic development shell with all dependencies and packages installed.
+2. Clone this repo to your desktop and run `devbox shell` to enter deterministic development shell with all dependencies and packages installed.
 
 ---
 
