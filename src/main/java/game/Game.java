@@ -195,110 +195,6 @@ public class Game {
     return false;
   }
 
-  private void pollCards() {
-
-    // if (table.cardBlack != null || table.cardWhite != null)
-    // System.err.println("Not empty table on fresh turn");
-
-    // Poll visible cards
-    var vCardWhite = table.pollCard(Player.WHITE);
-    var vCardBlack = table.pollCard(Player.BLACK);
-    if (vCardBlack == null && vCardWhite == null) {
-
-      table.isFinished = true;
-      var e = Event.GAME_FINISH;
-      e.winner = null;
-      events.add(e);
-      System.out.println("polling cards and draw");
-      return;
-    }
-    // Detect if someone ran out of cards
-    else if (vCardBlack == null) {
-      table.isFinished = true;
-      var e = Event.GAME_FINISH;
-      e.winner = Player.WHITE;
-      events.add(e);
-      for (var vCard : table.invisible)
-        table.deckWhite.add(vCard);
-
-      table.deckWhite.add(vCardWhite);
-      System.out.println("polling cards and White wins");
-      return;
-    }
-
-    else if (vCardWhite == null) {
-      table.isFinished = true;
-      var e = Event.GAME_FINISH;
-      e.winner = Player.BLACK;
-      events.add(e);
-      for (var vCard : table.invisible)
-        table.deckBlack.add(vCard);
-
-      table.deckBlack.add(vCardBlack);
-      System.out.println("polling cards and Black wins");
-      return;
-    }
-
-    // Place on table
-    table.placeCards(vCardWhite, vCardBlack);
-
-    // Pull 4 cards if it is a war
-    if (table.isWar)
-      for (var _i = 0; _i < 2; _i++) {
-        var invCardW = table.pollCard(Player.WHITE);
-        var invCardB = table.pollCard(Player.BLACK);
-        if (invCardW == null && invCardB == null) {
-          // Draw
-          table.isFinished = true;
-          var e = Event.GAME_FINISH;
-          e.winner = null;
-          events.add(e);
-          System.out.println("War polling cards and draw");
-          return;
-
-        } else if (invCardW == null) {
-          table.isFinished = true;
-          var e = Event.GAME_FINISH;
-          e.winner = Player.BLACK;
-          events.add(e);
-          for (var vCard : table.invisible)
-            table.deckBlack.add(vCard);
-
-          table.deckBlack.add(invCardB);
-          table.deckBlack.add(table.cardBlack);
-          table.deckBlack.add(table.cardWhite);
-          // Clear if not invisible
-          table.invisible.clear();
-          System.out.println("War polling cards and Black wins");
-          return;
-        } else if (invCardB == null) {
-          table.isFinished = true;
-          var e = Event.GAME_FINISH;
-          e.winner = Player.WHITE;
-          events.add(e);
-          for (var vCard : table.invisible)
-            table.deckWhite.add(vCard);
-
-          table.deckWhite.add(invCardW);
-          table.deckWhite.add(table.cardBlack);
-          table.deckWhite.add(table.cardWhite);
-
-          System.out.println("War polling cards and White wins");
-          table.invisible.clear();
-          return;
-        }
-
-        table.invisible.add(invCardB);
-        table.invisible.add(invCardW);
-      }
-
-    {
-      // Log to event
-      events
-          .add(Event.create(Event.POLL_CARDS, null, (table.isWar) ? 4 : 0, table.getCardWhite(), table.getCardBlack()));
-
-    }
-  }
 
   // Perform actions according to current table
   public void playRound() {
@@ -306,8 +202,6 @@ public class Game {
       return;
 
     events.add(Event.ROUND_START);
-
-    // pollCards();
 
     {
       var vCardWhite = table.pollCard(Player.WHITE);
