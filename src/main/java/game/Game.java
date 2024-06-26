@@ -64,6 +64,10 @@ public class Game {
       return isFinished;
     }
 
+    private void finish() {
+      isFinished = true;
+    }
+
     protected void placeCards(VCard whiteCard, VCard blackCard) {
       cardBlack = blackCard;
       cardWhite = whiteCard;
