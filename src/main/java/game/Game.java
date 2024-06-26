@@ -177,7 +177,6 @@ public class Game {
     events.add(Event.ROUND_START);
 
     pollCards();
-    poll_cards();
 
     if (table.isFinished)
       return;
