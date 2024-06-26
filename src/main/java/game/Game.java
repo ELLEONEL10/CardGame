@@ -46,6 +46,9 @@ public class Game {
     }
 
     private Queue<VCard> getDeck(Player player) {
+      if (player == null)
+        return null;
+
       switch (player) {
         case BLACK:
           return deckBlack;
