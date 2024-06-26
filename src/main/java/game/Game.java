@@ -116,6 +116,11 @@ public class Game {
     table.deckWhite = new LinkedList<VCard>(cards.subList((cards.size() / 2), cards.size()));
   }
 
+  // Finish game if one player has no cards left
+  private void finishGame(){
+    
+  }
+
   private void pollCards() {
 
     // if (table.cardBlack != null || table.cardWhite != null)
