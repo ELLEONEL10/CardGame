@@ -190,7 +190,6 @@ public class Game {
     return false;
   }
 
-
   // Perform actions according to current table
   public void playRound() {
     if (table.isFinished)
@@ -198,37 +197,27 @@ public class Game {
 
     events.add(Event.ROUND_START);
 
-    {
-      var vCardWhite = table.pollCard(Player.WHITE);
-      var vCardBlack = table.pollCard(Player.BLACK);
+    // Poll current player's visible cards
+    var vCardWhite = table.pollCard(Player.WHITE);
+    var vCardBlack = table.pollCard(Player.BLACK);
 
-      if (isGameOver(vCardWhite, vCardBlack))
-        return;
-
-      table.placeCards(vCardWhite, vCardBlack);
-
-    }
-    {
-      if (table.isWar()) {
-        for (var i = 0; i < 2; i++) {
-          var vCardWhite = table.pollCard(Player.WHITE);
-          var vCardBlack = table.pollCard(Player.BLACK);
-
-          if (isGameOver(vCardWhite, vCardBlack))
-            return;
-
-          table.invisible.add(vCardBlack);
-          table.invisible.add(vCardWhite);
-        }
-      }
-    }
-
-    if (table.isFinished)
+    if (isGameOver(vCardWhite, vCardBlack))
       return;
 
-    // Get current player's visible cards
-    var vCardWhite = table.getCardWhite();
-    var vCardBlack = table.getCardBlack();
+    table.placeCards(vCardWhite, vCardBlack);
+
+    if (table.isWar()) {
+      for (var i = 0; i < 2; i++) {
+        var invVCardWhite = table.pollCard(Player.WHITE);
+        var invVCardBlack = table.pollCard(Player.BLACK);
+
+        if (isGameOver(invVCardWhite, invVCardBlack))
+          return;
+
+        table.invisible.add(invVCardBlack);
+        table.invisible.add(invVCardWhite);
+      }
+    }
 
     var compareEv = Event.COMPARE_CARDS;
 
