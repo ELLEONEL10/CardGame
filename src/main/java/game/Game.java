@@ -226,17 +226,9 @@ public class Game {
 
     {
       // Log to event
-      var e = Event.POLL_CARDS;
+      events
+          .add(Event.create(Event.POLL_CARDS, null, (table.isWar) ? 4 : 0, table.getCardWhite(), table.getCardBlack()));
 
-      if (table.isWar)
-        e.cardAmount = 4;
-      else
-        e.cardAmount = 0;
-
-      e.blackCard = table.getCardBlack();
-      e.whiteCard = table.getCardWhite();
-
-      events.add(e);
     }
   }
 
@@ -278,10 +270,7 @@ public class Game {
       table.invisible.add(vCardWhite);
       table.invisible.add(vCardBlack);
 
-      var hideEv = Event.HIDE_CARDS;
-      hideEv.blackCard = vCardBlack;
-      hideEv.whiteCard = vCardWhite;
-      events.add(hideEv);
+      events.add(Event.create(Event.HIDE_CARDS, null, null, vCardWhite, vCardBlack));
     } else {
       // VCard.cardIdx does not just referse to registered card
       // But also represents it's priority
@@ -293,15 +282,7 @@ public class Game {
       var winnerDeck = (whiteWon) ? table.deckWhite : table.deckBlack;
 
       // Events
-      var collectEv = Event.COLLECT_CARDS;
-
-      collectEv.winner = winner;
-      collectEv.blackCard = vCardBlack;
-      collectEv.whiteCard = vCardWhite;
-
-      // if (vCardBlack == vCardWhite)
-      // System.err.println("Woogie-boogie, cards are the same");
-      collectEv.cardAmount = table.invisible.size();
+      var collectEv = Event.create(Event.COLLECT_CARDS, winner, table.invisible.size(), vCardWhite, vCardBlack);
 
       compareEv.winner = winner;
 
