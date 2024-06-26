@@ -165,6 +165,10 @@ public class Game {
       // To get Identical decks you need to call [Game.dispatchDecksNoShuffle]
       if (winner != null) {
         for (var vCard : table.invisible)
+          winnerDeck.add(vCard);
+        // Cards from invisible deck are moved out
+        table.invisible.clear();
+      }
 
       events.add(Event.ROUND_FINISH);
       events.add(Event.create(Event.GAME_FINISH, winner, null, null, null));
