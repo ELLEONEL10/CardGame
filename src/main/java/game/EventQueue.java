@@ -175,6 +175,15 @@ class EventQueue {
     VCard whiteCard = null;
     VCard blackCard = null;
 
+    /** Helper function to create event fast */
+    public static Event newEvent(Event e, Player winner, Integer cardAmount, VCard whiteCard, VCard blackCard){
+     e.winner = winner;
+     e.cardAmount = cardAmount;
+     e.whiteCard = whiteCard;
+     e.blackCard = blackCard;
+     return e;
+    }
+
   }
 
   protected Queue<Event> evQueue = new LinkedList<Event>();
