@@ -58,6 +58,12 @@ public class Game {
       cardWhite = whiteCard;
     }
 
+    /** Move cards to hidden deck */
+    protected void hideCards(VCard whiteCard, VCard blackCard){
+      invisible.add(whiteCard);
+      invisible.add(blackCard);
+    }
+
     protected VCard pollCard(Player player) {
       switch (player) {
         case BLACK:
