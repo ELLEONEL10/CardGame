@@ -26,6 +26,13 @@ from the beginning.
 - The game will continue until one player has collected all of the cards.
 
 ## Features
+- Modern UI enchanced with animations
+- Multiplayer
+- Crossplatform
+- Several gamemodes
+- Save and load progress 
+
+## Showcase
 ![Screenshot1]()
 ![Screenshot2]()
 ![Screenshot3]()
