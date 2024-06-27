@@ -2,9 +2,9 @@ CardGame
 ============
 
 
-This is simple card game. It is a university homework focused on working in team and writing full-featured game in java and swing.
+This is simple card game. It is a university homework focused on working in team and writing full-featured game in Java and JavaFX.
 
-> If you are not our professor, or other student, you wont find anything interesting for you.
+> If you are not our professor, or other student, you wont find anything useful here.
 ## Rules
 - The objective of the game is to win all of the cards.
 - The deck is divided evenly and randomly among the players, giving
