@@ -47,9 +47,51 @@ public class EventQueueTest {
     var game = new Game();
     game.dispatchDecks(0);
 
-    while (!game.table.isFinished())
-      game.playRound();
+    // Amount of cards in White deck
+    var amountW = 0;
+    // Amount of cards in Black deck
+    var amountB = 0;
+    // Amount of invisible cards on table
+    var hiddenAmount = 0;
+    while (!game.table.isFinished()) {
 
+      game.playRound();
+      for (var e : game.events.evQueue)
+
+        if (e == Event.POLL_CARDS) {
+          hiddenAmount += e.cardAmount;
+          assertEquals(4, e.cardAmount);
+          amountW -= (e.cardAmount / 2) + 1;
+          amountB -= (e.cardAmount / 2) + 1;
+        } else if (e == Event.COLLECT_CARDS) {
+          // assertEquals(0, e.cardAmount);
+          // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
+          // e.cardAmount);
+          if (e.winner == Player.BLACK)
+            // invisible on table
+            amountB += e.cardAmount + 2;
+          else
+            // invisible on table
+            amountW += e.cardAmount + 2;
+
+          hiddenAmount = 0;
+        } else if (e == Event.HIDE_CARDS)
+          hiddenAmount += 2;
+
+      game.events.evQueue.clear();
+    }
+
+    // assertEquals(4, game.events.evQueue.size());
+
+    assertEquals(52, Integer.max(amountB, amountW));
+    assertEquals(0, Integer.min(amountB, amountW));
+    assertEquals(0, hiddenAmount );
+  }
+
+  @Test
+  public void playRoundResultsTest() {
+    var game = new Game();
+    game.dispatchDecks(0);
     // Amount of cards in White deck
     var amountW = 0;
     // Amount of cards in Black deck
@@ -57,23 +99,26 @@ public class EventQueueTest {
     // Amount of invisible cards on table
     var hiddenAmount = 0;
 
-    for (var e : game.events.evQueue) {
-      if (e == Event.POLL_CARDS) {
-        hiddenAmount += e.cardAmount;
-        amountW -= e.cardAmount / 2 + 1;
-        amountB -= e.cardAmount / 2 + 1;
-      } else if (e == Event.COLLECT_CARDS) {
-        if (e.winner == Player.BLACK) {
-          // invisible on table
-          amountB += e.cardAmount + 2;
-        } else {
-          // invisible on table
-          amountW += e.cardAmount + 2;
-        }
-        hiddenAmount = 0;
-      } else if (e == Event.HIDE_CARDS) {
-        hiddenAmount += 2;
-      }
+    while (!game.table.isFinished()) {
+
+      for (var e : game.events.evQueue)
+        if (e == Event.POLL_CARDS) {
+          hiddenAmount += e.cardAmount;
+          amountW -= e.cardAmount / 2 + 1;
+          amountB -= e.cardAmount / 2 + 1;
+        } else if (e == Event.COLLECT_CARDS) {
+          if (e.winner == Player.BLACK) {
+            // invisible on table
+            amountB += e.cardAmount + 2;
+          } else {
+            // invisible on table
+            amountW += e.cardAmount + 2;
+          }
+          hiddenAmount = 0;
+        } else if (e == Event.HIDE_CARDS)
+          hiddenAmount += 2;
+
+      game.playRound();
     }
 
     // assertEquals(52, Integer.max(amountB, amountW));

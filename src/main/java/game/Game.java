@@ -206,7 +206,11 @@ public class Game {
 
     table.placeCards(vCardWhite, vCardBlack);
 
-    if (table.isWar()) 
+    var pollEv = Event.POLL_CARDS;
+    pollEv.blackCard = vCardBlack;
+    pollEv.whiteCard = vCardWhite;
+
+    if (table.isWar())
       // Pull 4 cards from player's stacks
       for (var i = 0; i < 2; i++) {
         var invVCardWhite = table.pollCard(Player.WHITE);
@@ -218,7 +222,10 @@ public class Game {
         table.invisible.add(invVCardBlack);
         table.invisible.add(invVCardWhite);
       }
-   
+
+    pollEv.cardAmount = 4;
+    events.add(pollEv);
+
     var compareEv = Event.COMPARE_CARDS;
 
     // Compare cards
@@ -247,8 +254,13 @@ public class Game {
       var winnerDeck = (whiteWon) ? table.deckWhite : table.deckBlack;
 
       // Events
-      var collectEv = Event.create(Event.COLLECT_CARDS, winner, table.invisible.size(), vCardWhite, vCardBlack);
+      var cardAmount = table.invisible.size();
+      var collectEv = Event.create(Event.COLLECT_CARDS, winner, cardAmount, vCardWhite, vCardBlack);
+      collectEv.cardAmount = cardAmount;
       compareEv.winner = winner;
+      // if (table.invisible.size() != 0)
+      // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
+      // collectEv.cardAmount);
       events.add(compareEv);
       if (table.isWar)
         events.add(Event.WAR_END);
@@ -266,6 +278,9 @@ public class Game {
       for (var vCard : table.invisible)
         winnerDeck.add(vCard);
       table.invisible.clear();
+      // if (table.invisible.size() != 0)
+      // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
+      // collectEv.cardAmount);
     }
 
     // Remove visible cards from table, since they are being moved in winner's deck
@@ -273,5 +288,11 @@ public class Game {
     table.cardBlack = null;
     table.cardWhite = null;
     events.add(Event.ROUND_FINISH);
+      for (var e : events.evQueue)
+        if (e == Event.POLL_CARDS) {
+        } else if (e == Event.COLLECT_CARDS) {
+          // if (e.cardAmount != 0)
+            // System.out.println("JLFKJSLDKFJSLDKFJSL " + e.cardAmount);
+        }
   }
 }
