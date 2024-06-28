@@ -2,7 +2,7 @@ CardGame
 ============
 
 
-This is simple card game. It is a university homework focused on working in team and writing full-featured game in Java and JavaFX.
+This is simple card game. It is a university homework focused on working in team and writing full-featured game in Java and ~~Java bindings to WebView~~ JavaFX.
 
 > If you are not our professor, or other student, you wont find anything useful here.
 ## Rules
