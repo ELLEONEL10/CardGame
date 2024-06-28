@@ -161,6 +161,9 @@ public class Game {
       // Can be null
       var winnerDeck = table.getDeck(winner);
 
+      events.add(Event.ROUND_FINISH);
+      events.add(Event.create(Event.GAME_FINISH, winner, table.invisible.size(), null, null));
+
       // If there is no winner, than invisible deck is not moving anywhere
       // Since that is a draw, we cannot move all the cards to specific player
       // That results each player to have zero cards and all cards move to invisible
@@ -169,6 +172,7 @@ public class Game {
       // found when players have identical stacks at the beginning
       // To get Identical decks you need to call [Game.dispatchDecksNoShuffle]
       if (winner != null) {
+
         for (var vCard : table.invisible)
           winnerDeck.add(vCard);
         // Cards from invisible deck are moved out
@@ -179,10 +183,9 @@ public class Game {
         winnerDeck.add(table.getCardBlack());
 
         winnerDeck.add(table.getCardWhite());
+
       }
 
-      events.add(Event.ROUND_FINISH);
-      events.add(Event.create(Event.GAME_FINISH, winner, null, null, null));
 
       // Indicate that game is over
       return true;
@@ -209,6 +212,7 @@ public class Game {
     var pollEv = Event.POLL_CARDS;
     pollEv.blackCard = vCardBlack;
     pollEv.whiteCard = vCardWhite;
+    pollEv.cardAmount = 0;
 
     if (table.isWar())
       // Pull 4 cards from player's stacks
@@ -223,7 +227,8 @@ public class Game {
         table.invisible.add(invVCardWhite);
       }
 
-    pollEv.cardAmount = 4;
+    if (table.isWar())
+      pollEv.cardAmount = 4;
     events.add(pollEv);
 
     var compareEv = Event.COMPARE_CARDS;
@@ -288,11 +293,11 @@ public class Game {
     table.cardBlack = null;
     table.cardWhite = null;
     events.add(Event.ROUND_FINISH);
-      for (var e : events.evQueue)
-        if (e == Event.POLL_CARDS) {
-        } else if (e == Event.COLLECT_CARDS) {
-          // if (e.cardAmount != 0)
-            // System.out.println("JLFKJSLDKFJSLDKFJSL " + e.cardAmount);
-        }
+    for (var e : events.evQueue)
+      if (e == Event.POLL_CARDS) {
+      } else if (e == Event.COLLECT_CARDS) {
+        // if (e.cardAmount != 0)
+        // System.out.println("JLFKJSLDKFJSLDKFJSL " + e.cardAmount);
+      }
   }
 }

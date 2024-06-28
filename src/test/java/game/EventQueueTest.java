@@ -1,10 +1,14 @@
 package game;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.LinkedList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import cards.Suit;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 
@@ -43,30 +47,29 @@ public class EventQueueTest {
   }
 
   @Test
-  public void cardAmountCompareTest() {
+  public void playRoundResultsTest() {
     var game = new Game();
     game.dispatchDecks(0);
-
     // Amount of cards in White deck
-    var amountW = 0;
+    var amountW = game.table.deckWhite.size();
     // Amount of cards in Black deck
-    var amountB = 0;
+    var amountB = game.table.deckBlack.size();
     // Amount of invisible cards on table
     var hiddenAmount = 0;
+
     while (!game.table.isFinished()) {
 
       game.playRound();
-      for (var e : game.events.evQueue)
 
+      for (var e : game.events.evQueue)
         if (e == Event.POLL_CARDS) {
+
           hiddenAmount += e.cardAmount;
-          assertEquals(4, e.cardAmount);
-          amountW -= (e.cardAmount / 2) + 1;
-          amountB -= (e.cardAmount / 2) + 1;
+          amountW -= 1 + e.cardAmount / 2;
+          amountB -= 1 + e.cardAmount / 2;
+
         } else if (e == Event.COLLECT_CARDS) {
-          // assertEquals(0, e.cardAmount);
-          // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
-          // e.cardAmount);
+
           if (e.winner == Player.BLACK)
             // invisible on table
             amountB += e.cardAmount + 2;
@@ -74,39 +77,67 @@ public class EventQueueTest {
             // invisible on table
             amountW += e.cardAmount + 2;
 
-          hiddenAmount = 0;
+          hiddenAmount -= e.cardAmount;
         } else if (e == Event.HIDE_CARDS)
           hiddenAmount += 2;
-
+        else if (e == Event.GAME_FINISH) {
+          if (e.winner != null)
+            if (e.winner == Player.BLACK) {
+              // invisible on table
+              amountB += e.cardAmount + 1;
+              amountW -= 1;
+            } else {
+              // invisible on table
+              amountW += e.cardAmount + 1;
+              amountB -= 1;
+            }
+          hiddenAmount -= e.cardAmount;
+        }
       game.events.evQueue.clear();
     }
 
-    // assertEquals(4, game.events.evQueue.size());
-
     assertEquals(52, Integer.max(amountB, amountW));
     assertEquals(0, Integer.min(amountB, amountW));
-    assertEquals(0, hiddenAmount );
+    assertEquals(0, hiddenAmount);
   }
 
   @Test
-  public void playRoundResultsTest() {
+  public void playRoundResultsThreeTurnsTest() {
     var game = new Game();
-    game.dispatchDecks(0);
+    // game.dispatchDecks(0);
+    {
+      var d = new LinkedList<VCard>();
+      d.add(new VCard(5, Suit.CLUBS));
+      d.add(new VCard(4, Suit.CLUBS));
+      game.table.deckWhite = d;
+    }
+    {
+      var d = new LinkedList<VCard>();
+      d.add(new VCard(3, Suit.CLUBS));
+      d.add(new VCard(2, Suit.CLUBS));
+      // d.add(new VCard(0, Suit.CLUBS));
+      game.table.deckBlack = d;
+    }
     // Amount of cards in White deck
-    var amountW = 0;
+    var amountW = game.table.deckWhite.size();
     // Amount of cards in Black deck
-    var amountB = 0;
+    var amountB = game.table.deckBlack.size();
     // Amount of invisible cards on table
     var hiddenAmount = 0;
 
     while (!game.table.isFinished()) {
 
+      game.playRound();
       for (var e : game.events.evQueue)
         if (e == Event.POLL_CARDS) {
           hiddenAmount += e.cardAmount;
-          amountW -= e.cardAmount / 2 + 1;
-          amountB -= e.cardAmount / 2 + 1;
+          // System.out.println(cardAmount);
+          assertEquals(0, e.cardAmount);
+          // amountW -= cardAmount;
+          amountW -= 1 + e.cardAmount / 2;
+          amountB -= 1 + e.cardAmount / 2;
         } else if (e == Event.COLLECT_CARDS) {
+          assertEquals(0, e.cardAmount);
           if (e.winner == Player.BLACK) {
             // invisible on table
             amountB += e.cardAmount + 2;
@@ -118,12 +149,12 @@ public class EventQueueTest {
         } else if (e == Event.HIDE_CARDS)
           hiddenAmount += 2;
 
-      game.playRound();
+      game.events.evQueue.clear();
     }
 
-    // assertEquals(52, Integer.max(amountB, amountW));
-    // assertEquals(0, Integer.min(amountB, amountW));
-    // assertEquals(0, hiddenAmount );
+    assertEquals(4, Integer.max(amountB, amountW));
+    assertEquals(0, Integer.min(amountB, amountW));
+    assertEquals(0, hiddenAmount);
   }
 
   // Test if events have a null in unexpected places
@@ -151,7 +182,7 @@ public class EventQueueTest {
           break;
         case GAME_FINISH:
           assertEquals(Player.class, e.winner.getClass());
-          assertEquals(null, e.cardAmount);
+          // assertEquals(null, e.cardAmount);
           assertEquals(null, e.whiteCard);
           assertEquals(null, e.blackCard);
           break;
