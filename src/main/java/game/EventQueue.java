@@ -71,8 +71,8 @@ class EventQueue {
     /**
      * Indicates if game was finished.
      * <hr>
-     * {@link Event#winner} : Player - winner of the game<br>
-     * {@link Event#cardAmount} : null <br>
+     * {@link Event#winner} : Player | null - winner of the game<br>
+     * {@link Event#cardAmount } : Integer - Amount of hidden cards going in winners deck
      * {@link Event#whiteCard} : null <br>
      * {@link Event#blackCard} : null
      */
