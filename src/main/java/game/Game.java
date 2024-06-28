@@ -177,6 +177,7 @@ public class Game {
         winnerDeck.add((winner == Player.WHITE) ? vCardWhite : vCardBlack);
         // Add visible cards on table to winner's stack
         winnerDeck.add(table.getCardBlack());
+
         winnerDeck.add(table.getCardWhite());
       }
 
@@ -196,7 +197,6 @@ public class Game {
       return;
 
     events.add(Event.ROUND_START);
-
     // Poll current player's visible cards
     var vCardWhite = table.pollCard(Player.WHITE);
     var vCardBlack = table.pollCard(Player.BLACK);
@@ -206,7 +206,8 @@ public class Game {
 
     table.placeCards(vCardWhite, vCardBlack);
 
-    if (table.isWar()) {
+    if (table.isWar()) 
+      // Pull 4 cards from player's stacks
       for (var i = 0; i < 2; i++) {
         var invVCardWhite = table.pollCard(Player.WHITE);
         var invVCardBlack = table.pollCard(Player.BLACK);
@@ -217,8 +218,7 @@ public class Game {
         table.invisible.add(invVCardBlack);
         table.invisible.add(invVCardWhite);
       }
-    }
-
+   
     var compareEv = Event.COMPARE_CARDS;
 
     // Compare cards
@@ -227,20 +227,15 @@ public class Game {
       table.isWar = true;
 
       // Events
-      // TODO: Debug
-      // For some reason java defaulting to something else instead of null
-      compareEv.winner = null;
       events.add(compareEv);
-
       if (!table.isWar)
         // We dont want to declare if war is already ongoing
-        // TODO: Add event WAR_CONTINUES
         events.add(Event.WAR_START);
+      events.add(Event.create(Event.HIDE_CARDS, null, null, vCardWhite, vCardBlack));
 
       // Hide
       table.hideCards(vCardBlack, vCardWhite);
 
-      events.add(Event.create(Event.HIDE_CARDS, null, null, vCardWhite, vCardBlack));
     } else {
       // VCard.cardIdx does not just referse to registered card
       // But also represents it's priority
@@ -253,15 +248,14 @@ public class Game {
 
       // Events
       var collectEv = Event.create(Event.COLLECT_CARDS, winner, table.invisible.size(), vCardWhite, vCardBlack);
-
       compareEv.winner = winner;
-
       events.add(compareEv);
       if (table.isWar)
         events.add(Event.WAR_END);
       events.add(collectEv);
 
       table.isWar = false;
+
       // Push back cards to bottom of deck
       winnerDeck.add(vCardBlack);
       winnerDeck.add(vCardWhite);
@@ -271,8 +265,6 @@ public class Game {
       // And the list is empty
       for (var vCard : table.invisible)
         winnerDeck.add(vCard);
-
-      // Clear if not invisible
       table.invisible.clear();
     }
 
@@ -280,7 +272,6 @@ public class Game {
     // Or if war was declared, they were moved in invisible deck
     table.cardBlack = null;
     table.cardWhite = null;
-
     events.add(Event.ROUND_FINISH);
   }
 }

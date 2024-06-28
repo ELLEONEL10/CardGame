@@ -110,6 +110,8 @@ class EventQueue {
      */
     WAR_START,
 
+    // TODO: Add event WAR_CONTINUES
+
     /**
      * Indicates if war was finished. <br>
      * NOTE: This event holds no winner even tho there is.
