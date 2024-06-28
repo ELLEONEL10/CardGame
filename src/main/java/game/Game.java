@@ -148,12 +148,12 @@ public class Game {
   private boolean isGameOver(VCard vCardWhite, VCard vCardBlack) {
     if (vCardBlack == null || vCardWhite == null) {
 
-      Player winner;
+      Player winner = null;
       // Assign winner
       // Winner can be only one player or none
       // So if first card is not null, than second will be null
-      winner = (vCardWhite != null) ? Player.WHITE : null;
-      winner = (vCardBlack != null) ? Player.BLACK : null;
+      winner = (vCardWhite != null) ? Player.WHITE : winner;
+      winner = (vCardBlack != null) ? Player.BLACK : winner;
 
       // Finish the game
       table.finish();
