@@ -95,10 +95,9 @@ public class Game implements Serializable {
     }
   }
 
-  public List<Card> registeredCards;
-
-  Table table = new Table();
-  EventQueue events = new EventQueue();
+  protected List<Card> registeredCards;
+  protected Table table = new Table();
+  protected EventQueue events = new EventQueue();
 
   public Game() {
     registeredCards = Arrays.asList(new Default().cards);
