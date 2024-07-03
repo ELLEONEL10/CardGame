@@ -18,7 +18,7 @@ public class Card {
     }
 
     public String getImagePath() {
-        return "/images/" + value + "_of_" + suit + ".png";
+        return "assets/cards/c" + value + "/" + suit + ".png";
     }
 
     @Override

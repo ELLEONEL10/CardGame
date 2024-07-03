@@ -33,14 +33,15 @@ public class WarCardGameGUI extends JFrame {
         setTitle("War Card Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setResizable(false); // Disallow resizing
+        setResizable(true); // Disallow resizing
 
         // Load icons with better image quality and set resizing hints
-        cardBackIcon = new ImageIcon(getClass().getResource("/images/cardbg.png"));
+        // cardBackIcon = new ImageIcon(getClass().getResource("../../../../assets/images/cardbg.png"));
+        cardBackIcon = new ImageIcon("assets/images/cardbg.png");
         cardBackIcon.setImage(cardBackIcon.getImage().getScaledInstance(250, 320, Image.SCALE_SMOOTH)); // Resize card image
-        winIcon = new ImageIcon(getClass().getResource("/images/win.png"));
-        loseIcon = new ImageIcon(getClass().getResource("/images/lose.png"));
-        tieIcon = new ImageIcon(getClass().getResource("/images/tie.png"));
+        winIcon = new ImageIcon("assets/images/win.png");
+        loseIcon = new ImageIcon("assets/images/lose.png");
+        tieIcon = new ImageIcon("assets/images/tie.png");
 
         // Calculate height based on 16:9 aspect ratio
         int width = 1080;
@@ -50,7 +51,7 @@ public class WarCardGameGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Image backgroundImg = new ImageIcon(getClass().getResource("/images/background.png")).getImage();
+                Image backgroundImg = new ImageIcon("assets/images/background.png").getImage();
                 g.drawImage(backgroundImg, 0, 0, getWidth(), getHeight(), this);
             }
         };
@@ -102,7 +103,7 @@ public class WarCardGameGUI extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                playSound("/sounds/play.wav");
+                playSound("assets/sounds/play.wav");
                 playRound();
             }
         });
@@ -113,10 +114,10 @@ public class WarCardGameGUI extends JFrame {
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // User and computer panels with padding
-        JPanel userPanel = createUserPanel("/images/user.png", player1CardLabel);
+        JPanel userPanel = createUserPanel("assets/images/user.png", player1CardLabel);
         userPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
-        JPanel computerPanel = createUserPanel("/images/computer.png", player2CardLabel);
+        JPanel computerPanel = createUserPanel("assets/images/computer.png", player2CardLabel);
         computerPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
         mainPanel.add(userPanel, BorderLayout.WEST);
@@ -125,7 +126,7 @@ public class WarCardGameGUI extends JFrame {
         createMenuBar();
         initGame();
 
-        playSound("/sounds/start.wav");
+        playSound("assets/sounds/start.wav");
 
         add(mainPanel, BorderLayout.CENTER);
         setSize(width, height); // Set size based on aspect ratio
@@ -137,7 +138,7 @@ public class WarCardGameGUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(false);
 
-        JLabel imageLabel = new JLabel(new ImageIcon(getClass().getResource(imagePath)));
+        JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
         panel.add(imageLabel, BorderLayout.NORTH);
@@ -152,7 +153,7 @@ public class WarCardGameGUI extends JFrame {
         ArrayList<Card> deck = new ArrayList<>();
         String[] suits = {"hearts", "diamonds", "clubs", "spades"};
         for (String suit : suits) {
-            for (int i = 1; i <= 13; i++) {
+            for (int i = 2; i <= 10; i++) {
                 deck.add(new Card(suit, i));
             }
         }
@@ -171,8 +172,10 @@ public class WarCardGameGUI extends JFrame {
         Card player2Card = player2.playCard();
 
         if (player1Card != null && player2Card != null) {
-            player1CardLabel.setIcon(new ImageIcon(getClass().getResource(player1Card.getImagePath())));
-            player2CardLabel.setIcon(new ImageIcon(getClass().getResource(player2Card.getImagePath())));
+            System.out.println(player1Card.getImagePath());
+            System.out.println(player2Card.getImagePath());
+            player1CardLabel.setIcon(new ImageIcon(player1Card.getImagePath()));
+            player2CardLabel.setIcon(new ImageIcon(player2Card.getImagePath()));
 
             int player1Score = Integer.parseInt(player1ScoreLabel.getText().split(": ")[1]);
             int player2Score = Integer.parseInt(player2ScoreLabel.getText().split(": ")[1]);
@@ -182,17 +185,17 @@ public class WarCardGameGUI extends JFrame {
                 player1ScoreLabel.setText("Total score: " + player1Score);
                 resultLabel.setText("");
                 resultLabel.setIcon(winIcon);
-                playSound("/sounds/win.wav");
+                playSound("assets/sounds/win.wav");
             } else if (player2Card.getValue() > player1Card.getValue()) {
                 player2Score += player2Card.getValue();
                 player2ScoreLabel.setText("Total score: " + player2Score);
                 resultLabel.setText("");
                 resultLabel.setIcon(loseIcon);
-                playSound("/sounds/lose.wav");
+                playSound("assets/sounds/lose.wav");
             } else {
                 resultLabel.setText("");
                 resultLabel.setIcon(tieIcon);
-                playSound("/sounds/tie.wav");
+                playSound("assets/sounds/tie.wav");
             }
 
             revalidate();
@@ -241,14 +244,10 @@ public class WarCardGameGUI extends JFrame {
 
     private void playSound(String soundFile) {
         try {
-            URL url = getClass().getResource(soundFile);
-            if (url == null) {
-                throw new IllegalArgumentException("Sound file not found: " + soundFile);
-            }
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
+            // AudioInputStream audioIn = AudioSystem.getAudioInputStream(new URL(soundFile));
+            // Clip clip = AudioSystem.getClip();
+            // clip.open(audioIn);
+            // clip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
