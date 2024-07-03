@@ -111,6 +111,21 @@ public class Game implements Serializable {
     registeredCards = cards;
   }
 
+  // Load game from fs
+  public static Game load(String path) throws Exception {
+    // Reading the object from a file
+    FileInputStream file = new FileInputStream(path);
+    ObjectInputStream in = new ObjectInputStream(file);
+
+    // Method for deserialization of object
+    var game = (Game) in.readObject();
+
+    in.close();
+    file.close();
+
+    return game;
+  }
+
   // Save game to fs
   public void save(String path, String name) throws Exception {
     // Create dirs if does not exists
