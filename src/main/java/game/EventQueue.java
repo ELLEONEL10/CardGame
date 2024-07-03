@@ -1,5 +1,6 @@
 package game;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
@@ -43,7 +44,7 @@ import java.util.function.Consumer;
  * </pre>
  * 
  */
-class EventQueue {
+class EventQueue implements Serializable {
   public enum Player {
     WHITE(0), BLACK(1);
     int idx;
