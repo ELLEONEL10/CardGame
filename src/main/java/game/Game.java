@@ -142,6 +142,11 @@ public class Game implements Serializable {
     out.close();
     file.close();
   }
+
+  public int getScoreWhite() {
+    return table.deckWhite.size();
+  }
+
   public void dispatchDecks() {
     dispatchDecks(new Random().nextInt(), false);
   }
