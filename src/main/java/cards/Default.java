@@ -1,6 +1,8 @@
 package cards;
 
-public class Default {
+import java.io.Serializable;
+
+public class Default implements Serializable{
   public class C2 extends Card {}
   public class C3 extends Card {}
   public class C4 extends Card {}
