@@ -111,6 +111,22 @@ public class Game implements Serializable {
     registeredCards = cards;
   }
 
+  // Save game to fs
+  public void save(String path, String name) throws Exception {
+    // Create dirs if does not exists
+    Files.createDirectories(Paths.get(path));
+
+    var file = new FileOutputStream(path + "/" + name);
+
+    // Serialize object
+    var out = new ObjectOutputStream(file);
+
+    // Method for serialization of object
+    out.writeObject(this);
+
+    out.close();
+    file.close();
+  }
   public void dispatchDecks() {
     dispatchDecks(new Random().nextInt(), false);
   }
