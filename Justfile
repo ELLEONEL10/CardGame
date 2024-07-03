@@ -2,7 +2,7 @@
 # Compile and run
 default:
 	mvn compile
-	java -classpath ./target/classes -XX:+ShowCodeDetailsInExceptionMessages cli.Main
+	java -classpath ./target/classes -XX:+ShowCodeDetailsInExceptionMessages app.App
 
 # Compile project with maven to ./target
 compile:
