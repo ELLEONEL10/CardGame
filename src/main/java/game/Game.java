@@ -147,6 +147,9 @@ public class Game implements Serializable {
     return table.deckWhite.size();
   }
 
+  public int getScoreBlack() {
+    return table.deckBlack.size();
+  }
   public void dispatchDecks() {
     dispatchDecks(new Random().nextInt(), false);
   }
