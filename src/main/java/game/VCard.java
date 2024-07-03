@@ -1,8 +1,10 @@
 package game;
 
+import java.io.Serializable;
+
 import cards.Suit;
 
-public class VCard {
+public class VCard implements Serializable{
   // Index of card among registered cards
   public final int cardIdx;
   public final Suit suit;
