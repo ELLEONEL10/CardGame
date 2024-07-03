@@ -1,6 +1,8 @@
 package cards;
 
-public abstract class Card {
+import java.io.Serializable;
+
+public abstract class Card implements Serializable{
   private static String PREFIX = "assets/cards/";
 
   public String getAssetPath(Suit suit) {
