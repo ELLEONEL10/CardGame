@@ -15,10 +15,10 @@ import cards.Suit;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 
-public class Game {
+public class Game implements Serializable {
   // Representation of physical ingame table
   // Can be used for lookup any moment of the game
-  public class Table {
+  public class Table implements Serializable {
     // Cards of all players during the war
     List<VCard> invisible = new Stack<VCard>();
 
