@@ -150,6 +150,12 @@ public class Game implements Serializable {
   public int getScoreBlack() {
     return table.deckBlack.size();
   }
+
+  public String getAssetPath(VCard vCard) {
+    var card = registeredCards.get(vCard.cardIdx);
+    return card.getAssetPath(vCard.suit);
+  }
+
   public void dispatchDecks() {
     dispatchDecks(new Random().nextInt(), false);
   }
