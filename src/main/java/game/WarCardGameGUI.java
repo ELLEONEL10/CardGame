@@ -218,6 +218,7 @@ public class WarCardGameGUI extends JFrame {
           }
       }
     }
+
     revalidate();
     repaint();
     game.events.evQueue.clear();
