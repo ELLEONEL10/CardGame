@@ -290,6 +290,7 @@ public class Game implements Serializable {
       table.isWar = true;
 
       // Events
+      compareEv.winner = null;
       events.add(compareEv);
       if (!table.isWar)
         // We dont want to declare if war is already ongoing
