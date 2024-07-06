@@ -1,6 +1,6 @@
 package app;
 
-import gui.WarCardGameGUI;
+import game.WarCardGameGUI;
 
 public class App{
     public static void main(String[] args) {

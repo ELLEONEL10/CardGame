@@ -1,7 +1,8 @@
-package gui;
+package game;
 
-import game.Card;
-import game.Player;
+import game.Game;
+import game.EventQueue;
+import game.EventQueue.Event;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -16,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class WarCardGameGUI extends JFrame {
-    private Player player1;
-    private Player player2;
+
     private JLabel player1CardLabel;
     private JLabel player2CardLabel;
     private JLabel player1ScoreLabel;
@@ -28,7 +28,8 @@ public class WarCardGameGUI extends JFrame {
     private ImageIcon winIcon;
     private ImageIcon loseIcon;
     private ImageIcon tieIcon;
-
+    private Game game = null;
+    Image backgroundImg;
     public WarCardGameGUI() {
         setTitle("War Card Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +52,12 @@ public class WarCardGameGUI extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Image backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+
+
+              	if (game.table.isWar()) {
+            		 backgroundImg = new ImageIcon("assets/images/backgroundw.png").getImage();
+              	}
+              	else backgroundImg = new ImageIcon("assets/images/background.png").getImage();
                 g.drawImage(backgroundImg, 0, 0, getWidth(), getHeight(), this);
             }
         };
@@ -148,69 +154,64 @@ public class WarCardGameGUI extends JFrame {
     }
 
     private void initGame() {
-        player1 = new Player("Player 1");
-        player2 = new Player("Player 2");
-        ArrayList<Card> deck = new ArrayList<>();
-        String[] suits = {"hearts", "diamonds", "clubs", "spades"};
-        for (String suit : suits) {
-            for (int i = 2; i <= 10; i++) {
-                deck.add(new Card(suit, i));
-            }
-        }
-        Collections.shuffle(deck);
-        for (int i = 0; i < deck.size(); i++) {
-            if (i % 2 == 0) {
-                player1.addCard(deck.get(i));
-            } else {
-                player2.addCard(deck.get(i));
-            }
-        }
+         game = new Game();
+         game.dispatchDecks();
     }
 
     private void playRound() {
-        Card player1Card = player1.playCard();
-        Card player2Card = player2.playCard();
+    	game.playRound();
+    	
+    	for (var e : game.events.evQueue)
+    	{
+		      if (e == Event.GAME_FINISH)
+		      {
+		    	  if(e.winner==null)  resultLabel.setIcon(tieIcon);   		
+	 		
+		    	  else
+	 		    	  switch(e.winner)
+	 		    	  {
+	 		    	  case WHITE :
+	 		    		  resultLabel.setIcon(winIcon);
+	 		    		  resultLabel.setText("User wins the game!");	 		  	
+	 	 		    	  player1ScoreLabel.setText("Cards left: 52 " );
+	 	 		    	  player2ScoreLabel.setText("Cards left: 0" );
+	 		    		  break;
+	 		    		
+	 		    	  case BLACK :
+	 		    		  resultLabel.setIcon(loseIcon);
+	 		    		  resultLabel.setText("Computer wins the game!");
+	 	 		    	  player1ScoreLabel.setText("Cards left: 0 " );
+	 	 		    	  player2ScoreLabel.setText("Cards left: 52" );
+	 		    		  break;
+	 		    	  }
+		      }
+		    	 if (e == Event.POLL_CARDS){
+	 		    	  player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.whiteCard)));
+	 		    	  player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.blackCard)));
+	 		    	  player1ScoreLabel.setText("Cards left: " + game.getScoreWhite());
+	 		    	  player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
+	 		      }
+		    	 if (e == Event.COMPARE_CARDS) {
+	 		    	  if(e.winner==null)resultLabel.setIcon(tieIcon);  	
+	 		    	  else
+	 		    	  switch(e.winner)
+	 		    	  {
+	 		    	  case WHITE :
+	 		    		
+	 		    		  resultLabel.setIcon(winIcon);
+	 		    		
+	 		    		  break;
+	 		    	  case BLACK :
+	 		    		  resultLabel.setIcon(loseIcon);
+	 		    		  break;
+	 		    	  }
+		    	 }
+		      }
 
-        if (player1Card != null && player2Card != null) {
-            System.out.println(player1Card.getImagePath());
-            System.out.println(player2Card.getImagePath());
-            player1CardLabel.setIcon(new ImageIcon(player1Card.getImagePath()));
-            player2CardLabel.setIcon(new ImageIcon(player2Card.getImagePath()));
 
-            int player1Score = Integer.parseInt(player1ScoreLabel.getText().split(": ")[1]);
-            int player2Score = Integer.parseInt(player2ScoreLabel.getText().split(": ")[1]);
-
-            if (player1Card.getValue() > player2Card.getValue()) {
-                player1Score += player1Card.getValue();
-                player1ScoreLabel.setText("Total score: " + player1Score);
-                resultLabel.setText("");
-                resultLabel.setIcon(winIcon);
-                playSound("assets/sounds/win.wav");
-            } else if (player2Card.getValue() > player1Card.getValue()) {
-                player2Score += player2Card.getValue();
-                player2ScoreLabel.setText("Total score: " + player2Score);
-                resultLabel.setText("");
-                resultLabel.setIcon(loseIcon);
-                playSound("assets/sounds/lose.wav");
-            } else {
-                resultLabel.setText("");
-                resultLabel.setIcon(tieIcon);
-                playSound("assets/sounds/tie.wav");
-            }
-
-            revalidate();
-            repaint();
-        } else {
-            if (player1Card == null) {
-                resultLabel.setText("Computer wins the game!");
-                resultLabel.setIcon(loseIcon);
-            } else {
-                resultLabel.setText("User wins the game!");
-                resultLabel.setIcon(winIcon);
-            }
-            playButton.setEnabled(false);
-        }
+    	game.events.evQueue.clear();
     }
+
 
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
