@@ -154,15 +154,25 @@ public class WarCardGameGUI extends JFrame {
     return panel;
   }
 
+  private void Update() {
+      player1CardLabel.setIcon(cardBackIcon);
+      player2CardLabel.setIcon(cardBackIcon);
+      player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
+      player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
+      resultLabel.setIcon(null);
+	  
+  }
   private void initGame() {
     game = new Game();
     game.dispatchDecks();
   }
 
   private void playRound() {
+    
     game.playRound();
-
+    System.out.println(game.events.evQueue);
     for (var e : game.events.evQueue) {
+    	
       if (e == Event.GAME_FINISH) {
         if (e.winner == null)
           resultLabel.setIcon(tieIcon);
@@ -191,8 +201,10 @@ public class WarCardGameGUI extends JFrame {
         player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
       }
       if (e == Event.COMPARE_CARDS) {
-        if (e.winner == null)
+    	  System.out.println(e.winner);
+        if (e.winner == null) {
           resultLabel.setIcon(tieIcon);
+        }
         else
           switch (e.winner) {
             case WHITE:
@@ -206,7 +218,8 @@ public class WarCardGameGUI extends JFrame {
           }
       }
     }
-
+    revalidate();
+    repaint();
     game.events.evQueue.clear();
   }
 
@@ -215,7 +228,8 @@ public class WarCardGameGUI extends JFrame {
 
     JMenu fileMenu = new JMenu("File");
     JMenuItem newGameItem = new JMenuItem("New Game");
-
+    JMenuItem saveButtonItem = new JMenuItem("Save");
+    JMenuItem loadButtonItem = new JMenuItem("Load");
     newGameItem.addActionListener(e -> {
       initGame();
       playButton.setEnabled(true);
@@ -226,8 +240,33 @@ public class WarCardGameGUI extends JFrame {
       player1CardLabel.setIcon(cardBackIcon);
       player2CardLabel.setIcon(cardBackIcon);
     });
-
+    saveButtonItem.addActionListener(e -> {
+    	System.out.println("Saved");
+        try {
+			this.game.save("./saves", "gameState");
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+		}
+      
+      });
+    loadButtonItem.addActionListener(e -> {
+    	System.out.println("Loaded");
+        try {
+			this.game = game.load("./saves/gameState");
+			System.out.println();
+	
+			 }
+		 catch (Exception e1) {
+			
+			e1.printStackTrace();
+		}
+        Update();
+        
+    });
     fileMenu.add(newGameItem);
+    fileMenu.add(saveButtonItem);
+    fileMenu.add(loadButtonItem);
     menuBar.add(fileMenu);
 
     JMenu aboutMenu = new JMenu("About");
