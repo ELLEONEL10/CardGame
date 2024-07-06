@@ -13,7 +13,8 @@
   "shell": {
     "init_hook": [
       "onefetch",
-      "zsh"
+      "zsh",
+      "export _JAVA_AWT_WM_NONREPARENTING=1"
     ],
     "scripts": {
       "test": [
