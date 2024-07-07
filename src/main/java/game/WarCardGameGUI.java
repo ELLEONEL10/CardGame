@@ -283,11 +283,11 @@ public class WarCardGameGUI extends JFrame {
 
   private void playSound(String soundFile) {
     try {
-      // AudioInputStream audioIn = AudioSystem.getAudioInputStream(new
-      // URL(soundFile));
-      // Clip clip = AudioSystem.getClip();
-      // clip.open(audioIn);
-      // clip.start();
+      File f = new File(soundFile);
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start();
     } catch (Exception e) {
       e.printStackTrace();
     }
