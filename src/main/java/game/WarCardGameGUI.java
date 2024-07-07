@@ -255,7 +255,7 @@ public class WarCardGameGUI extends JFrame {
     loadButtonItem.addActionListener(e -> {
       System.out.println("Loaded");
       try {
-        this.game = game.load("./saves/gameState");
+        this.game = Game.load("./saves/gameState");
         System.out.println();
 
       } catch (Exception e1) {
