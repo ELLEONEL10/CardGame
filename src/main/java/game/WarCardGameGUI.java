@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,24 +156,23 @@ public class WarCardGameGUI extends JFrame {
   }
 
   private void Update() {
-      player1CardLabel.setIcon(cardBackIcon);
-      player2CardLabel.setIcon(cardBackIcon);
-      player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
-      player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
-      resultLabel.setIcon(null);
-	  
+    player1CardLabel.setIcon(cardBackIcon);
+    player2CardLabel.setIcon(cardBackIcon);
+    player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
+    player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
+    resultLabel.setIcon(null);
   }
+
   private void initGame() {
     game = new Game();
     game.dispatchDecks();
   }
 
   private void playRound() {
-    
     game.playRound();
     System.out.println(game.events.evQueue);
     for (var e : game.events.evQueue) {
-    	
+
       if (e == Event.GAME_FINISH) {
         if (e.winner == null)
           resultLabel.setIcon(tieIcon);
@@ -201,11 +201,10 @@ public class WarCardGameGUI extends JFrame {
         player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
       }
       if (e == Event.COMPARE_CARDS) {
-    	  System.out.println(e.winner);
+        System.out.println(e.winner);
         if (e.winner == null) {
           resultLabel.setIcon(tieIcon);
-        }
-        else
+        } else
           switch (e.winner) {
             case WHITE:
 
@@ -242,28 +241,27 @@ public class WarCardGameGUI extends JFrame {
       player2CardLabel.setIcon(cardBackIcon);
     });
     saveButtonItem.addActionListener(e -> {
-    	System.out.println("Saved");
-        try {
-			this.game.save("./saves", "gameState");
-		} catch (Exception e1) {
-			
-			e1.printStackTrace();
-		}
-      
-      });
+      System.out.println("Saved");
+      try {
+        this.game.save("./saves", "gameState");
+      } catch (Exception e1) {
+
+        e1.printStackTrace();
+      }
+
+    });
     loadButtonItem.addActionListener(e -> {
-    	System.out.println("Loaded");
-        try {
-			this.game = game.load("./saves/gameState");
-			System.out.println();
-	
-			 }
-		 catch (Exception e1) {
-			
-			e1.printStackTrace();
-		}
-        Update();
-        
+      System.out.println("Loaded");
+      try {
+        this.game = game.load("./saves/gameState");
+        System.out.println();
+
+      } catch (Exception e1) {
+
+        e1.printStackTrace();
+      }
+      Update();
+
     });
     fileMenu.add(newGameItem);
     fileMenu.add(saveButtonItem);
@@ -283,11 +281,11 @@ public class WarCardGameGUI extends JFrame {
 
   private void playSound(String soundFile) {
     try {
-      File f = new File(soundFile);
-      AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-      Clip clip = AudioSystem.getClip();
-      clip.open(audioIn);
-      clip.start();
+      File f = new File(soundFile);
+      AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioIn);
+      clip.start();
     } catch (Exception e) {
       e.printStackTrace();
     }
