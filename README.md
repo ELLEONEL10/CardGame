@@ -34,7 +34,11 @@ from the beginning.
 
 ## Showcase
 
-<img src="assets/demo/screenshot-1.png" alt="Screenshot" width="350" style="margin: 20px;"/> <img src="assets/demo/screenshot-2.png" alt="Screenshot" width="350" style="margin: 20px;"/>
+<p align="center">
+  <img alt="Light" src="assets/demo/screenshot-1.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Dark" src="assets/demo/screenshot-2.png" width="45%">
+</p>
 
 
 ## Setup
