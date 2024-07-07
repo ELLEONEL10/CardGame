@@ -34,8 +34,8 @@ from the beginning.
 
 ## Showcase
 
-<img src="assets/demo/screenshot-1.png" alt="Screenshot" width="400" style="margin: 20px;"/>
-<img src="assets/demo/screenshot-2.png" alt="Screenshot" width="400" style="margin: 20px;"/>
+<img src="assets/demo/screenshot-1.png" alt="Screenshot" width="350" style="margin: 20px;"/>
+<img src="assets/demo/screenshot-2.png" alt="Screenshot" width="350" style="margin: 20px;"/>
 
 
 ## Setup
