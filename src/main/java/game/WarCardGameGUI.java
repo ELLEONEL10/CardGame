@@ -174,12 +174,9 @@ public class WarCardGameGUI extends JFrame {
     for (var e : game.events.evQueue) {
 
       if (e == Event.GAME_FINISH) {
-        if (e.winner == null) {
+        if (e.winner == null) 
           resultLabel.setIcon(tieIcon);
-          playSound("assets/sounds/tie.wav");
-
-        }
-
+       
         else
           switch (e.winner) {
             case WHITE:
@@ -187,7 +184,6 @@ public class WarCardGameGUI extends JFrame {
               resultLabel.setText("User wins the game!");
               player1ScoreLabel.setText("Cards left: 52 ");
               player2ScoreLabel.setText("Cards left: 0");
-              playSound("assets/sounds/lose.wav");
               break;
 
             case BLACK:
@@ -195,7 +191,6 @@ public class WarCardGameGUI extends JFrame {
               resultLabel.setText("Computer wins the game!");
               player1ScoreLabel.setText("Cards left: 0 ");
               player2ScoreLabel.setText("Cards left: 52");
-              playSound("assets/sounds/win.wav");
               break;
           }
       }
@@ -209,15 +204,17 @@ public class WarCardGameGUI extends JFrame {
         System.out.println(e.winner);
         if (e.winner == null) {
           resultLabel.setIcon(tieIcon);
+          playSound("assets/sounds/tie.wav");
         } else
           switch (e.winner) {
             case WHITE:
-
+              playSound("assets/sounds/win.wav");
               resultLabel.setIcon(winIcon);
-
               break;
+              
             case BLACK:
               resultLabel.setIcon(loseIcon);
+              playSound("assets/sounds/lose.wav");
               break;
           }
       }
