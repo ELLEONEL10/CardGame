@@ -10,6 +10,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import cards.VCard;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,32 +162,44 @@ public class WarCardGameGUI extends JFrame {
 
     return panel;
   }
-
+  
   private void Update() {
+    
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
+    
+    
     resultLabel.setIcon(null);
+    
+    
     var whiteCard = game.getTable().getCardWhite();
     var blackCard = game.getTable().getCardBlack();
 
     player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon( game.getAssetPath(whiteCard)) : cardBackIcon );
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon( game.getAssetPath(blackCard)) : cardBackIcon);
-  }
 
+    
+    
+  }
+  
 
   private void GameFinishedSate(Event e){
+
+    backgroundImg = new ImageIcon("assets/images/background.png").getImage();
     if (e.winner == null)
           resultLabel.setIcon(tieIcon);
         else
         switch (e.winner) {
           case WHITE:
             resultLabel.setIcon(winIcon);
+            player2CardLabel.setIcon(null);
             resultLabel.setText("User wins the game!");
             player1ScoreLabel.setText("Cards left: 52 ");
             player2ScoreLabel.setText("Cards left: 0");
             break;
           case BLACK:
             resultLabel.setIcon(loseIcon);
+            player1CardLabel.setIcon(null);
             resultLabel.setText("Computer wins the game!");
             player1ScoreLabel.setText("Cards left: 0 ");
             player2ScoreLabel.setText("Cards left: 52");
@@ -203,22 +218,15 @@ public class WarCardGameGUI extends JFrame {
     for (var e : game.getEvents()) {
       switch (e) {
 
-        case GAME_FINISH:
-        GameFinishedSate(e);
-        break;
-        
         case POLL_CARDS:
-        player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.whiteCard)));
-        player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.blackCard)));
-        player1ScoreLabel.setText("Cards left: " + game.getScoreWhite());
-        player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
+        Update();
         break;
 
         case COMPARE_CARDS:
         System.out.println(e.winner);
         if (e.winner == null) {
           resultLabel.setIcon(tieIcon);
-          playSound("assets/sounds/tie.wav");
+          //playSound("assets/sounds/tie.wav");
         } 
         else
           switch (e.winner) {
@@ -232,6 +240,10 @@ public class WarCardGameGUI extends JFrame {
               playSound("assets/sounds/lose.wav");
               break;
           }  
+        break;
+
+        case GAME_FINISH:
+        GameFinishedSate(e);
         break;
       }
       
@@ -275,7 +287,9 @@ public class WarCardGameGUI extends JFrame {
       } catch (Exception e1) {
         e1.printStackTrace();
       }
+      backgroundImg = new ImageIcon("assets/images/background.png").getImage();
       Update();
+
     });
         fileMenu.add(newGameItem);
         fileMenu.add(saveButtonItem);
