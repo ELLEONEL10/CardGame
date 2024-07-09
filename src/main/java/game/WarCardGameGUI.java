@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+
 public class WarCardGameGUI extends JFrame {
 
   private JLabel player1CardLabel;
@@ -32,248 +33,252 @@ public class WarCardGameGUI extends JFrame {
   Image backgroundImg;
 
   public WarCardGameGUI() {
-      setTitle("War Card Game");
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      setLayout(new BorderLayout());
-      setResizable(true); // Disallow resizing
+    setTitle("War Card Game");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLayout(new BorderLayout());
+    setResizable(true); // Disallow resizing
 
-      // Load icons with better image quality and set resizing hints
-      cardBackIcon = new ImageIcon("assets/images/cardbg.png");
-      cardBackIcon.setImage(cardBackIcon.getImage().getScaledInstance(250, 320, Image.SCALE_SMOOTH)); // Resize card image
-      winIcon = new ImageIcon("assets/images/win.png");
-      loseIcon = new ImageIcon("assets/images/lose.png");
-      tieIcon = new ImageIcon("assets/images/tie.png");
+    // Load icons with better image quality and set resizing hints
+    cardBackIcon = new ImageIcon("assets/images/cardbg.png");
+    cardBackIcon.setImage(cardBackIcon.getImage().getScaledInstance(250, 320, Image.SCALE_SMOOTH)); // Resize card image
+    winIcon = new ImageIcon("assets/images/win.png");
+    loseIcon = new ImageIcon("assets/images/lose.png");
+    tieIcon = new ImageIcon("assets/images/tie.png");
 
-      // Calculate height based on 16:9 aspect ratio
-      int width = 1080;
-      int height = width * 13 / 20;
+    // Calculate height based on 16:9 aspect ratio
+    int width = 1080;
+    int height = width * 13 / 20;
 
-      JPanel mainPanel = new JPanel(new BorderLayout()) {
-          @Override
-          protected void paintComponent(Graphics g) {
-              super.paintComponent(g);
+    JPanel mainPanel = new JPanel(new BorderLayout()) {
+      @Override
+      protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-              if (game.table.isWar()) {
-                  backgroundImg = new ImageIcon("assets/images/backgroundw.png").getImage();
-              } else
-                  backgroundImg = new ImageIcon("assets/images/background.png").getImage();
-              g.drawImage(backgroundImg, 0, 0, getWidth(), getHeight(), this);
-          }
-      };
+        if (game.table.isWar()) {
+          backgroundImg = new ImageIcon("assets/images/backgroundw.png").getImage();
+        } else
+          backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+        g.drawImage(backgroundImg, 0, 0, getWidth(), getHeight(), this);
+      }
+    };
 
-      // Top panel with card displays and result
-      JPanel topPanel = new JPanel(new BorderLayout());
-      topPanel.setOpaque(false);
+    // Top panel with card displays and result
+    JPanel topPanel = new JPanel(new BorderLayout());
+    topPanel.setOpaque(false);
 
-      JPanel cardsPanel = new JPanel(new GridLayout(1, 3, 80, 0));
-      cardsPanel.setOpaque(false);
-      cardsPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50)); // Adjust margin
+    JPanel cardsPanel = new JPanel(new GridLayout(1, 3, 80, 0));
+    cardsPanel.setOpaque(false);
+    cardsPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50)); // Adjust margin
 
-      player1CardLabel = new JLabel(cardBackIcon);
-      player1CardLabel.setHorizontalAlignment(JLabel.CENTER);
+    player1CardLabel = new JLabel(cardBackIcon);
+    player1CardLabel.setHorizontalAlignment(JLabel.CENTER);
 
-      resultLabel = new JLabel("", JLabel.CENTER);
+    resultLabel = new JLabel("", JLabel.CENTER);
 
-      player2CardLabel = new JLabel(cardBackIcon);
-      player2CardLabel.setHorizontalAlignment(JLabel.CENTER);
+    player2CardLabel = new JLabel(cardBackIcon);
+    player2CardLabel.setHorizontalAlignment(JLabel.CENTER);
 
-      cardsPanel.add(player1CardLabel);
-      cardsPanel.add(resultLabel);
-      cardsPanel.add(player2CardLabel);
+    cardsPanel.add(player1CardLabel);
+    cardsPanel.add(resultLabel);
+    cardsPanel.add(player2CardLabel);
 
-      topPanel.add(cardsPanel, BorderLayout.CENTER);
+    topPanel.add(cardsPanel, BorderLayout.CENTER);
 
-      mainPanel.add(topPanel, BorderLayout.CENTER);
+    mainPanel.add(topPanel, BorderLayout.CENTER);
 
-      // Bottom panel with scores and play button
-      JPanel bottomPanel = new JPanel(new BorderLayout());
-      bottomPanel.setOpaque(false);
+    // Bottom panel with scores and play button
+    JPanel bottomPanel = new JPanel(new BorderLayout());
+    bottomPanel.setOpaque(false);
 
-      JPanel scorePanel = new JPanel(new GridLayout(1, 2));
-      scorePanel.setOpaque(false);
+    JPanel scorePanel = new JPanel(new GridLayout(1, 2));
+    scorePanel.setOpaque(false);
 
-      player1ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
-      player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-      player1ScoreLabel.setForeground(Color.BLACK);
+    player1ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
+    player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+    player1ScoreLabel.setForeground(Color.BLACK);
 
-      player2ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
-      player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-      player2ScoreLabel.setForeground(Color.BLACK);
+    player2ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
+    player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+    player2ScoreLabel.setForeground(Color.BLACK);
 
-      scorePanel.add(player1ScoreLabel);
-      scorePanel.add(player2ScoreLabel);
+    scorePanel.add(player1ScoreLabel);
+    scorePanel.add(player2ScoreLabel);
 
-      playButton = new JButton("Play");
-      playButton.setFont(new Font("Arial", Font.BOLD, 18));
-      playButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              playSound("assets/sounds/play.wav");
-              playRound();
-          }
-      });
+    playButton = new JButton("Play");
+    playButton.setFont(new Font("Arial", Font.BOLD, 18));
+    playButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        playSound("assets/sounds/play.wav");
+        playRound();
+      }
+    });
 
-      bottomPanel.add(scorePanel, BorderLayout.CENTER);
-      bottomPanel.add(playButton, BorderLayout.SOUTH);
+    bottomPanel.add(scorePanel, BorderLayout.CENTER);
+    bottomPanel.add(playButton, BorderLayout.SOUTH);
 
-      mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+    mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-      // User and computer panels with padding and titles
-      JPanel userPanel = createUserPanelWithTitle("assets/images/user.png", player1CardLabel, "Player 1");
-      userPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    // User and computer panels with padding and titles
+    JPanel userPanel = createUserPanelWithTitle("assets/images/user.png", player1CardLabel, "Player 1");
+    userPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
-      JPanel computerPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
-      computerPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    JPanel computerPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
+    computerPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
-      mainPanel.add(userPanel, BorderLayout.WEST);
-      mainPanel.add(computerPanel, BorderLayout.EAST);
+    mainPanel.add(userPanel, BorderLayout.WEST);
+    mainPanel.add(computerPanel, BorderLayout.EAST);
 
-      createMenuBar();
-      initGame();
+    createMenuBar();
+    initGame();
 
-      playSound("assets/sounds/start.wav");
+    playSound("assets/sounds/start.wav");
 
-      add(mainPanel, BorderLayout.CENTER);
-      setSize(width, height); // Set size based on aspect ratio
-      setLocationRelativeTo(null);
-      setVisible(true);
+    add(mainPanel, BorderLayout.CENTER);
+    setSize(width, height); // Set size based on aspect ratio
+    setLocationRelativeTo(null);
+    setVisible(true);
   }
 
   private JPanel createUserPanelWithTitle(String imagePath, JLabel cardLabel, String title) {
-      JPanel panel = new JPanel(new BorderLayout());
-      panel.setOpaque(false);
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setOpaque(false);
 
-      JLabel titleLabel = new JLabel(title, JLabel.CENTER);
-      titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-      titleLabel.setForeground(Color.BLACK);
+    JLabel titleLabel = new JLabel(title, JLabel.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titleLabel.setForeground(Color.BLACK);
 
-      JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
-      imageLabel.setHorizontalAlignment(JLabel.CENTER);
+    JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
+    imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
-      panel.add(titleLabel, BorderLayout.NORTH);
-      panel.add(imageLabel, BorderLayout.CENTER);
-      panel.add(cardLabel, BorderLayout.SOUTH);
+    panel.add(titleLabel, BorderLayout.NORTH);
+    panel.add(imageLabel, BorderLayout.CENTER);
+    panel.add(cardLabel, BorderLayout.SOUTH);
 
-      return panel;
+    return panel;
   }
 
   private void Update() {
-      player1CardLabel.setIcon(cardBackIcon);
-      player2CardLabel.setIcon(cardBackIcon);
-      player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
-      player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
-      resultLabel.setIcon(null);
+    player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
+    player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
+    resultLabel.setIcon(null);
+    var whiteCard = game.table.getCardWhite();
+    var blackCard = game.table.getCardBlack();
+
+    player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(whiteCard)));
+    player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(blackCard)));
   }
 
   private void initGame() {
-      game = new Game();
-      game.dispatchDecks();
+    game = new Game();
+    game.dispatchDecks();
   }
 
   private void playRound() {
 
-      game.playRound();
-      System.out.println(game.events.evQueue);
-      for (var e : game.events.evQueue) {
+    game.playRound();
+    System.out.println(game.events.evQueue);
+    for (var e : game.events.evQueue) {
 
-          if (e == Event.GAME_FINISH) {
-              if (e.winner == null)
-                  resultLabel.setIcon(tieIcon);
-              else
-                  switch (e.winner) {
-                      case WHITE:
-                          resultLabel.setIcon(winIcon);
-                          resultLabel.setText("User wins the game!");
-                          player1ScoreLabel.setText("Cards left: 52 ");
-                          player2ScoreLabel.setText("Cards left: 0");
-                          break;
-                      case BLACK:
-                          resultLabel.setIcon(loseIcon);
-                          resultLabel.setText("Computer wins the game!");
-                          player1ScoreLabel.setText("Cards left: 0 ");
-                          player2ScoreLabel.setText("Cards left: 52");
-                          break;
-                  }
+      if (e == Event.GAME_FINISH) {
+        if (e.winner == null)
+          resultLabel.setIcon(tieIcon);
+        else
+          switch (e.winner) {
+            case WHITE:
+              resultLabel.setIcon(winIcon);
+              resultLabel.setText("User wins the game!");
+              player1ScoreLabel.setText("Cards left: 52 ");
+              player2ScoreLabel.setText("Cards left: 0");
+              break;
+            case BLACK:
+              resultLabel.setIcon(loseIcon);
+              resultLabel.setText("Computer wins the game!");
+              player1ScoreLabel.setText("Cards left: 0 ");
+              player2ScoreLabel.setText("Cards left: 52");
+              break;
           }
-          if (e == Event.POLL_CARDS) {
-            player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.whiteCard)));
-            player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.blackCard)));
-            player1ScoreLabel.setText("Cards left: " + game.getScoreWhite());
-            player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
-          }
-          if (e == Event.COMPARE_CARDS) {
-            System.out.println(e.winner);
-            if (e.winner == null) {
-              resultLabel.setIcon(tieIcon);
-              playSound("assets/sounds/tie.wav");
-            } else
-              switch (e.winner) {
-                case WHITE:
-                  playSound("assets/sounds/win.wav");
-                  resultLabel.setIcon(winIcon);
-                  break;
-                  
-                case BLACK:
-                  resultLabel.setIcon(loseIcon);
-                  playSound("assets/sounds/lose.wav");
-                  break;
-              }
-          }
-        }
+      }
+      if (e == Event.POLL_CARDS) {
+        player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.whiteCard)));
+        player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(e.blackCard)));
+        player1ScoreLabel.setText("Cards left: " + game.getScoreWhite());
+        player2ScoreLabel.setText("Cards left: " + game.getScoreBlack());
+      }
+      if (e == Event.COMPARE_CARDS) {
+        System.out.println(e.winner);
+        if (e.winner == null) {
+          resultLabel.setIcon(tieIcon);
+          playSound("assets/sounds/tie.wav");
+        } else
+          switch (e.winner) {
+            case WHITE:
+              playSound("assets/sounds/win.wav");
+              resultLabel.setIcon(winIcon);
+              break;
 
-      revalidate();
-      repaint();
-      game.events.evQueue.clear();
+            case BLACK:
+              resultLabel.setIcon(loseIcon);
+              playSound("assets/sounds/lose.wav");
+              break;
+          }
+      }
+    }
+
+    revalidate();
+    repaint();
+    game.events.evQueue.clear();
   }
 
   private void createMenuBar() {
-      JMenuBar menuBar = new JMenuBar();
+    JMenuBar menuBar = new JMenuBar();
 
-      JMenu fileMenu = new JMenu("File");
-      JMenuItem newGameItem = new JMenuItem("New Game");
-      JMenuItem saveButtonItem = new JMenuItem("Save");
-      JMenuItem loadButtonItem = new JMenuItem("Load");
-      newGameItem.addActionListener(e -> {
-          initGame();
-          playButton.setEnabled(true);
-          player1ScoreLabel.setText("Total score: 0");
-          player2ScoreLabel.setText("Total score: 0");
-          resultLabel.setText("");
-          resultLabel.setIcon(null);
-          player1CardLabel.setIcon(cardBackIcon);
-          player2CardLabel.setIcon(cardBackIcon);
-      });
-      saveButtonItem.addActionListener(e -> {
-          System.out.println("Saved");
-          try {
-              this.game.save("./saves", "gameState");
-          } catch (Exception e1) {
-              e1.printStackTrace();
-          }
-      });
-      loadButtonItem.addActionListener(e -> {
-          System.out.println("Loaded");
-          try {
-              this.game = game.load("./saves/gameState");
-          } catch (Exception e1) {
-              e1.printStackTrace();
-          }
-          Update();
-      });
-      fileMenu.add(newGameItem);
-      fileMenu.add(saveButtonItem);
-      fileMenu.add(loadButtonItem);
-      menuBar.add(fileMenu);
+    JMenu fileMenu = new JMenu("File");
+    JMenuItem newGameItem = new JMenuItem("New Game");
+    JMenuItem saveButtonItem = new JMenuItem("Save");
+    JMenuItem loadButtonItem = new JMenuItem("Load");
+    newGameItem.addActionListener(e -> {
+      initGame();
+      playButton.setEnabled(true);
+      player1ScoreLabel.setText("Total score: 0");
+      player2ScoreLabel.setText("Total score: 0");
+      resultLabel.setText("");
+      resultLabel.setIcon(null);
 
-      JMenu aboutMenu = new JMenu("About");
-      JMenuItem aboutItem = new JMenuItem("About Us");
-      aboutItem.addActionListener(
-              e -> JOptionPane.showMessageDialog(this, "Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova, \r\n" + //
-                      "Ömer Duran, Danylo Bazalinskyi, G. V."));
-      aboutMenu.add(aboutItem);
-      menuBar.add(aboutMenu);
+      player1CardLabel.setIcon(cardBackIcon);
+      player2CardLabel.setIcon(cardBackIcon);
+    });
+    saveButtonItem.addActionListener(e -> {
+      System.out.println("Saved");
+      try {
+        this.game.save("./saves", "gameState");
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+    });
+    loadButtonItem.addActionListener(e -> {
+      System.out.println("Loaded");
+      try {
+        this.game = game.load("./saves/gameState");
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+      Update();
+    });
+    fileMenu.add(newGameItem);
+    fileMenu.add(saveButtonItem);
+    fileMenu.add(loadButtonItem);
+    menuBar.add(fileMenu);
 
-      setJMenuBar(menuBar);
+    JMenu aboutMenu = new JMenu("About");
+    JMenuItem aboutItem = new JMenuItem("About Us");
+    aboutItem.addActionListener(
+        e -> JOptionPane.showMessageDialog(this, "Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova, \r\n" + //
+            "Ömer Duran, Danylo Bazalinskyi, G. V."));
+    aboutMenu.add(aboutItem);
+    menuBar.add(aboutMenu);
+
+    setJMenuBar(menuBar);
   }
 
   private void playSound(String soundFile) {
@@ -289,6 +294,6 @@ public class WarCardGameGUI extends JFrame {
   }
 
   public static void main(String[] args) {
-      SwingUtilities.invokeLater(() -> new WarCardGameGUI());
+    SwingUtilities.invokeLater(() -> new WarCardGameGUI());
   }
 }

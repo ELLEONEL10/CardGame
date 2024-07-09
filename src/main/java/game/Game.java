@@ -247,6 +247,12 @@ public class Game implements Serializable {
 
   // Perform actions according to current table
   public void playRound() {
+    // Remove visible cards from table, since they are being moved in winner's deck in previous round
+    // Or if war was declared, they were moved in invisible deck
+    // NOTE: We keep it cached between rounds, to reflect last state on table
+    table.cardBlack = null;
+    table.cardWhite = null;
+
     if (table.isFinished)
       return;
 
@@ -340,10 +346,6 @@ public class Game implements Serializable {
       // collectEv.cardAmount);
     }
 
-    // Remove visible cards from table, since they are being moved in winner's deck
-    // Or if war was declared, they were moved in invisible deck
-    table.cardBlack = null;
-    table.cardWhite = null;
     events.add(Event.ROUND_FINISH);
     for (var e : events.evQueue)
       if (e == Event.POLL_CARDS) {
