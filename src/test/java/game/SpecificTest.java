@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.junit.jupiter.api.Test;
 
 import cards.Suit;
+import cards.VCard;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 

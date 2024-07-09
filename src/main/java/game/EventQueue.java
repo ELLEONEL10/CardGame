@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Consumer;
 
+import cards.VCard;
+
 /**
  * Game Events. Indicates very detailed what is happening during the game. <br>
  * 

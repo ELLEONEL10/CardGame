@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import cards.Suit;
+import cards.VCard;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 

@@ -20,6 +20,7 @@ import java.util.Stack;
 import cards.Card;
 import cards.Default;
 import cards.Suit;
+import cards.VCard;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 
