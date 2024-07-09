@@ -1,5 +1,6 @@
 package app;
 
+<<<<<<< HEAD
 import game.Game;
 import game.EventQueue;
 import game.EventQueue.Event;
@@ -14,13 +15,40 @@ import javax.swing.border.EmptyBorder;
 import cards.VCard;
 
 import java.awt.*;
+=======
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+>>>>>>> 1ac0d6dbb1d2466f7d90ec78d8c645fba892616b
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import game.EventQueue.Event;
+import game.EventQueue.Player;
+import game.Game;
 
 public class WarCardGameGUI extends JFrame {
 
@@ -283,7 +311,7 @@ public class WarCardGameGUI extends JFrame {
     loadButtonItem.addActionListener(e -> {
       System.out.println("Loaded");
       try {
-        this.game = game.load("./saves/gameState");
+        this.game = Game.load("./saves/gameState");
       } catch (Exception e1) {
         e1.printStackTrace();
       }
