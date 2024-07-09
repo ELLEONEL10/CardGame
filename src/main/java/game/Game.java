@@ -393,9 +393,7 @@ public class Game implements Serializable {
       var collectEv = Event.create(Event.COLLECT_CARDS, winner, cardAmount, vCardWhite, vCardBlack);
       collectEv.cardAmount = cardAmount;
       compareEv.winner = winner;
-      // if (table.invisible.size() != 0)
-      // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
-      // collectEv.cardAmount);
+
       events.add(compareEv);
       if (table.isWar)
         events.add(Event.WAR_END);
@@ -413,17 +411,9 @@ public class Game implements Serializable {
       for (var vCard : table.invisible)
         winnerDeck.add(vCard);
       table.invisible.clear();
-      // if (table.invisible.size() != 0)
-      // System.out.println("JLFKJSLDKFJSLDKFJSLKDFJSLKDJFSLKDJFLSKDJFLSDKFJL " +
-      // collectEv.cardAmount);
     }
 
     events.add(Event.ROUND_FINISH);
-    for (var e : events.evQueue)
-      if (e == Event.POLL_CARDS) {
-      } else if (e == Event.COLLECT_CARDS) {
-        // if (e.cardAmount != 0)
-        // System.out.println("JLFKJSLDKFJSLDKFJSL " + e.cardAmount);
-      }
+    
   }
 }
