@@ -94,11 +94,11 @@ public class WarCardGameGUI extends JFrame {
     JPanel scorePanel = new JPanel(new GridLayout(1, 2));
     scorePanel.setOpaque(false);
 
-    player1ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
+    player1ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
     player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     player1ScoreLabel.setForeground(Color.BLACK);
 
-    player2ScoreLabel = new JLabel("Total score: 0", JLabel.CENTER);
+    player2ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
     player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     player2ScoreLabel.setForeground(Color.BLACK);
 
@@ -247,8 +247,8 @@ public class WarCardGameGUI extends JFrame {
     newGameItem.addActionListener(e -> {
       initGame();
       playButton.setEnabled(true);
-      player1ScoreLabel.setText("Total score: 0");
-      player2ScoreLabel.setText("Total score: 0");
+      player1ScoreLabel.setText("Cards left: 26");
+      player2ScoreLabel.setText("Cards left: 26");
       resultLabel.setText("");
       resultLabel.setIcon(null);
 
