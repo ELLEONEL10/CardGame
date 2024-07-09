@@ -6,7 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +23,12 @@ import cards.VCard;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 
+// Liana -> VCard Card Suit Default Usernames Assets file structure (getAssetPath). Game.regıstered cards (card regıstratıon). Player
+// A. -> Game core logic (playRound isGameOver Table) EventQueue and Event. Devbox. Just. Set up maven.
+// Fadi -> Set up gui scene Visualisatıon of the game and Uİ.
+// Anas -> Do the frontend logic for file save load about rules. Getters and Setters. Dıspatch Decks. Helper functıons
+// Danylo -> Connect frontend and backend. Change vısıbılıty modıfıers and organıze the code structure
+// Omer -> Serialization and Deserialization (save and load game file). Readme.md. gitignore. Wrote docs
 public class Game implements Serializable {
   // Representation of physical ingame table
   // Can be used for lookup any moment of the game
