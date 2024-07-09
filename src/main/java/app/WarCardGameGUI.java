@@ -1,6 +1,5 @@
 package app;
 
-
 import game.Game;
 import game.EventQueue;
 import game.EventQueue.Event;
@@ -43,8 +42,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.*;
+import java.awt.*;
 
 import game.EventQueue.Event;
 import game.EventQueue.Player;
@@ -64,6 +66,9 @@ public class WarCardGameGUI extends JFrame {
   private ImageIcon tieIcon;
   private Game game = null;
   Image backgroundImg;
+  private JTextField player1NameField;
+  private JTextField player2NameField;
+  private JLabel cardCountLabel; 
 
   public WarCardGameGUI() {
     setTitle("War Card Game");
@@ -171,75 +176,107 @@ public class WarCardGameGUI extends JFrame {
     setSize(width, height); // Set size based on aspect ratio
     setLocationRelativeTo(null);
     setVisible(true);
+
+    
+    JPanel cardCountPanel = new JPanel() {
+      @Override
+      protected void paintComponent(Graphics g) {
+          super.paintComponent(g);
+          Image cardBgImage = new ImageIcon("assets/images/cardbg.png").getImage();
+          g.drawImage(cardBgImage, 0, 0, getWidth(), getHeight(), this);
+      }
+  };
+  cardCountPanel.setLayout(new BorderLayout());
+  cardCountPanel.setPreferredSize(new Dimension(250, 320));
+  cardCountPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+  cardCountLabel = new JLabel("Cards: 0", JLabel.CENTER);
+  cardCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
+  cardCountLabel.setForeground(Color.WHITE);
+  cardCountPanel.add(cardCountLabel, BorderLayout.CENTER);
+
+  JPanel bottomRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+  bottomRightPanel.setOpaque(false);
+  bottomRightPanel.add(cardCountPanel);
+
+  add(bottomRightPanel, BorderLayout.SOUTH);
   }
 
   private JPanel createUserPanelWithTitle(String imagePath, JLabel cardLabel, String title) {
     JPanel panel = new JPanel(new BorderLayout());
     panel.setOpaque(false);
 
-    JLabel titleLabel = new JLabel(title, JLabel.CENTER);
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(Color.BLACK);
+    JTextField titleField = new JTextField(title, JLabel.CENTER);
+    titleField.setFont(new Font("Arial", Font.BOLD, 18));
+    titleField.setForeground(Color.BLACK);
+    titleField.setHorizontalAlignment(JTextField.CENTER);
+
+    if (title.equals("Player 1")) {
+        player1NameField = titleField;
+    } else {
+        player2NameField = titleField;
+    }
 
     JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    panel.add(titleLabel, BorderLayout.NORTH);
+    panel.add(titleField, BorderLayout.NORTH);
     panel.add(imageLabel, BorderLayout.CENTER);
     panel.add(cardLabel, BorderLayout.SOUTH);
 
     return panel;
   }
-  
+
   private void Update() {
     resultLabel.setText(null);
-    
+
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
-    
-    
+
     resultLabel.setIcon(null);
-    
-    
+
     var whiteCard = game.getTable().getCardWhite();
     var blackCard = game.getTable().getCardBlack();
 
-    player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon( game.getAssetPath(whiteCard)) : cardBackIcon );
-    player2CardLabel.setIcon((blackCard != null) ? new ImageIcon( game.getAssetPath(blackCard)) : cardBackIcon);
+    player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon(game.getAssetPath(whiteCard)) : cardBackIcon);
+    player2CardLabel.setIcon((blackCard != null) ? new ImageIcon(game.getAssetPath(blackCard)) : cardBackIcon);
 
-    if (game.getTable().isWar()) 
+    int totalCards = game.getTable().getDeckSize(Player.WHITE) + game.getTable().getDeckSize(Player.BLACK);
+    cardCountLabel.setText("Cards: " + totalCards);
+
+    if (game.getTable().isWar())
       resultLabel.setIcon(tieIcon);
     else
-    resultLabel.setIcon((game.getTable().getCardWhite().cardIdx>game.getTable().getCardBlack().cardIdx)? winIcon : loseIcon);
-    
+      resultLabel.setIcon((game.getTable().getCardWhite().cardIdx > game.getTable().getCardBlack().cardIdx) ? winIcon : loseIcon);
+
     
   }
-  
 
-  private void GameFinishedSate(Event e){
+  private void GameFinishedSate(Event e) {
     backgroundImg = new ImageIcon("assets/images/background.png").getImage();
     revalidate();
     repaint();
     if (e.winner == null)
-          resultLabel.setIcon(tieIcon);
-        else
-        switch (e.winner) {
-          case WHITE:
-            resultLabel.setIcon(winIcon);
-            player2CardLabel.setIcon(null);
-            resultLabel.setText("User wins the game!");
-            player1ScoreLabel.setText("Cards left: 52 ");
-            player2ScoreLabel.setText("Cards left: 0");
-            break;
-          case BLACK:
-            resultLabel.setIcon(loseIcon);
-            player1CardLabel.setIcon(null);
-            resultLabel.setText("Computer wins the game!");
-            player1ScoreLabel.setText("Cards left: 0 ");
-            player2ScoreLabel.setText("Cards left: 52");
-            break;
-        }
+      resultLabel.setIcon(tieIcon);
+    else
+      switch (e.winner) {
+        case WHITE:
+          resultLabel.setIcon(winIcon);
+          player2CardLabel.setIcon(null);
+          resultLabel.setText(player1NameField.getText() + " wins the game!");
+          player1ScoreLabel.setText("Cards left: 52 ");
+          player2ScoreLabel.setText("Cards left: 0");
+          break;
+        case BLACK:
+          resultLabel.setIcon(loseIcon);
+          player1CardLabel.setIcon(null);
+          resultLabel.setText(player2NameField.getText() + " wins the game!");
+          player1ScoreLabel.setText("Cards left: 0 ");
+          player2ScoreLabel.setText("Cards left: 52");
+          break;
+      }
   }
+
   private void initGame() {
     game = new Game();
     game.dispatchDecks();
@@ -247,41 +284,39 @@ public class WarCardGameGUI extends JFrame {
 
   private void playRound() {
     game.playRound();
-    
+
     System.out.println(game.getEvents());
     for (var e : game.getEvents()) {
       switch (e) {
 
         case POLL_CARDS:
-        Update();
-        break;
+          Update();
+          break;
 
         case COMPARE_CARDS:
-        System.out.println(e.winner);
-        if (e.winner == null) {
-          resultLabel.setIcon(tieIcon);
-          //playSound("assets/sounds/tie.wav");
-        } 
-        else
-          switch (e.winner) {
-            case WHITE:
-              playSound("assets/sounds/win.wav");
-              resultLabel.setIcon(winIcon);
-              break;
+          System.out.println(e.winner);
+          if (e.winner == null) {
+            resultLabel.setIcon(tieIcon);
+            playSound("assets/sounds/tie.wav");
+          } else
+            switch (e.winner) {
+              case WHITE:
+                playSound("assets/sounds/win.wav");
+                resultLabel.setIcon(winIcon);
+                break;
 
-            case BLACK:
-              resultLabel.setIcon(loseIcon);
-              playSound("assets/sounds/lose.wav");
-              break;
-          }  
-        break;
+              case BLACK:
+                resultLabel.setIcon(loseIcon);
+                playSound("assets/sounds/lose.wav");
+                break;
+            }
+          break;
 
         case GAME_FINISH:
-        GameFinishedSate(e);
-        break;
+          GameFinishedSate(e);
+          break;
       }
-      
-      
+
     }
 
     revalidate();
@@ -327,58 +362,58 @@ public class WarCardGameGUI extends JFrame {
       Update();
 
     });
-        fileMenu.add(newGameItem);
-        fileMenu.add(saveButtonItem);
-        fileMenu.add(loadButtonItem);
-        menuBar.add(fileMenu);
+    fileMenu.add(newGameItem);
+    fileMenu.add(saveButtonItem);
+    fileMenu.add(loadButtonItem);
+    menuBar.add(fileMenu);
 
-        JMenu rulesMenu = new JMenu("Rules");
-        JMenuItem rulesItem = new JMenuItem("View Rules");
-        rulesItem.addActionListener(e -> JOptionPane.showMessageDialog(this,
-            "The objective of the game is to win all of the cards.\n" +
-            "The deck is divided evenly and randomly among the players,\n" + 
-            " giving each a down stack. In unison, each player reveals the\n" + 
-            " top card of their deck - this is a \"battle\" - and the player with\n" + 
-            " the higher card takes both of the cards played and moves them to their stack.\n" + 
-            " Aces are high, and suits are ignored.\n" +
-            "If the two cards played are of equal value,\n" + 
-            " then there is a war. Both players place the next 2 cards from their pile \n" + 
-            "face down and then another card face-up. The owner of the higher face-up card\n" + 
-            "wins the war and adds all the cards on the table to the bottom of their deck.\n" + 
-            "If the face-up cards are again equal then the battle repeats with another set of \n" + 
-            "face-down/up cards. This repeats until one player's face-up card is higher than their opponent's.\n" +
-            "If a player runs out of cards during a war, that player immediately loses.\n" + 
-            "In others, the player may play the last card in their deck as their face-up card for the remainder\n" + 
-            "of the war or replay the game from the beginning.\n" +
-            "The game will continue until one player has collected all of the cards."
-        ));
-        rulesMenu.add(rulesItem);
-        menuBar.add(rulesMenu);
+    JMenu rulesMenu = new JMenu("Rules");
+    JMenuItem rulesItem = new JMenuItem("View Rules");
+    rulesItem.addActionListener(e -> JOptionPane.showMessageDialog(this,
+        "The objective of the game is to win all of the cards.\n" +
+        "The deck is divided evenly and randomly among the players,\n" +
+        " giving each a down stack. In unison, each player reveals the\n" +
+        " top card of their deck - this is a \"battle\" - and the player with\n" +
+        " the higher card takes both of the cards played and moves them to their stack.\n" +
+        " Aces are high, and suits are ignored.\n" +
+        "If the two cards played are of equal value,\n" +
+        " then there is a war. Both players place the next 2 cards from their pile \n" +
+        "face down and then another card face-up. The owner of the higher face-up card\n" +
+        "wins the war and adds all the cards on the table to the bottom of their deck.\n" +
+        "If the face-up cards are again equal then the battle repeats with another set of \n" +
+        "face-down/up cards. This repeats until one player's face-up card is higher than their opponent's.\n" +
+        "If a player runs out of cards during a war, that player immediately loses.\n" +
+        "In others, the player may play the last card in their deck as their face-up card for the remainder\n" +
+        "of the war or replay the game from the beginning.\n" +
+        "The game will continue until one player has collected all of the cards."
+    ));
+    rulesMenu.add(rulesItem);
+    menuBar.add(rulesMenu);
 
-        JMenu aboutMenu = new JMenu("About");
-        JMenuItem aboutItem = new JMenuItem("About Us");
-        aboutItem.addActionListener(e -> {
-            JLabel label = new JLabel("<html>Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova,<br>" +
-                    "Ömer Duran, Danylo Bazalinskyi, G. V.<br><br>" +
-                    "<a href='https://github.com/ELLEONEL10/CardGame'>CLICK HERE</a> for GitHub Repo.</html>");
-            label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            label.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    try {
-                        Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame"));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+    JMenu aboutMenu = new JMenu("About");
+    JMenuItem aboutItem = new JMenuItem("About Us");
+    aboutItem.addActionListener(e -> {
+        JLabel label = new JLabel("<html>Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova,<br>" +
+                "Ömer Duran, Danylo Bazalinskyi, G. V.<br><br>" +
+                "<a href='https://github.com/ELLEONEL10/CardGame'>CLICK HERE</a> for GitHub Repo.</html>");
+        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        label.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame"));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            });
-            JOptionPane.showMessageDialog(this, label, "About Us", JOptionPane.INFORMATION_MESSAGE);
+            }
         });
-        aboutMenu.add(aboutItem);
-        menuBar.add(aboutMenu);
+        JOptionPane.showMessageDialog(this, label, "About Us", JOptionPane.INFORMATION_MESSAGE);
+    });
+    aboutMenu.add(aboutItem);
+    menuBar.add(aboutMenu);
 
-        setJMenuBar(menuBar);
-    }
+    setJMenuBar(menuBar);
+  }
 
   private void playSound(String soundFile) {
     try {
