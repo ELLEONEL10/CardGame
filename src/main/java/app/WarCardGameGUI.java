@@ -171,20 +171,9 @@ public class WarCardGameGUI extends JFrame {
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon( game.getAssetPath(blackCard)) : cardBackIcon);
   }
 
-  private void initGame() {
-    game = new Game();
-    game.dispatchDecks();
-  }
 
-  private void playRound() {
-    game.playRound();
-    
-    System.out.println(game.getEvents());
-    for (var e : game.getEvents()) {
-      switch (e) {
-
-        case GAME_FINISH:
-        if (e.winner == null)
+  private void GameFinishedSate(Event e){
+    if (e.winner == null)
           resultLabel.setIcon(tieIcon);
         else
         switch (e.winner) {
@@ -201,6 +190,21 @@ public class WarCardGameGUI extends JFrame {
             player2ScoreLabel.setText("Cards left: 52");
             break;
         }
+  }
+  private void initGame() {
+    game = new Game();
+    game.dispatchDecks();
+  }
+
+  private void playRound() {
+    game.playRound();
+    
+    System.out.println(game.getEvents());
+    for (var e : game.getEvents()) {
+      switch (e) {
+
+        case GAME_FINISH:
+        GameFinishedSate(e);
         break;
         
         case POLL_CARDS:
