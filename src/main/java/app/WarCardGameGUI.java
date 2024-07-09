@@ -1,8 +1,9 @@
-package game;
+package app;
 
 import game.Game;
 import game.EventQueue;
 import game.EventQueue.Event;
+import game.EventQueue.Player;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -54,7 +55,7 @@ public class WarCardGameGUI extends JFrame {
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (game.table.isWar()) {
+        if (game.getTable().isWar()) {
           backgroundImg = new ImageIcon("assets/images/backgroundw.png").getImage();
         } else
           backgroundImg = new ImageIcon("assets/images/background.png").getImage();
@@ -159,11 +160,11 @@ public class WarCardGameGUI extends JFrame {
   }
 
   private void Update() {
-    player1ScoreLabel.setText("Cards left: " + game.table.deckWhite.size());
-    player2ScoreLabel.setText("Cards left: " + game.table.deckBlack.size());
+    player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
+    player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
     resultLabel.setIcon(null);
-    var whiteCard = game.table.getCardWhite();
-    var blackCard = game.table.getCardBlack();
+    var whiteCard = game.getTable().getCardWhite();
+    var blackCard = game.getTable().getCardBlack();
 
     player1CardLabel.setIcon(new ImageIcon(game.getAssetPath(whiteCard)));
     player2CardLabel.setIcon(new ImageIcon(game.getAssetPath(blackCard)));
@@ -177,8 +178,8 @@ public class WarCardGameGUI extends JFrame {
   private void playRound() {
 
     game.playRound();
-    System.out.println(game.events.evQueue);
-    for (var e : game.events.evQueue) {
+    System.out.println(game.getEvents());
+    for (var e : game.getEvents()) {
 
       if (e == Event.GAME_FINISH) {
         if (e.winner == null)
@@ -227,7 +228,6 @@ public class WarCardGameGUI extends JFrame {
 
     revalidate();
     repaint();
-    game.events.evQueue.clear();
   }
 
   private void createMenuBar() {

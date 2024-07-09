@@ -53,15 +53,42 @@ public class Game implements Serializable {
       return cardBlack;
     }
 
+    /**
+     * Get the amount of cards in player's deck
+     * Returns -1 if {@link game.EventQueue.Player} specified wrong
+     */
+    public int getDeckSize(Player player) {
+      if (player == null)
+        return -1;
+      switch (player) {
+        case BLACK:
+          return deckBlack.size();
+        case WHITE:
+          return deckWhite.size();
+        default:
+          return -1;
+      }
+    }
+
     private Queue<VCard> getDeck(Player player) {
       if (player == null)
         return null;
-
       switch (player) {
         case BLACK:
           return deckBlack;
         case WHITE:
           return deckWhite;
+        default:
+          return null;
+      }
+    }
+
+    protected VCard pollCard(Player player) {
+      switch (player) {
+        case BLACK:
+          return deckBlack.poll();
+        case WHITE:
+          return deckWhite.poll();
         default:
           return null;
       }
@@ -91,25 +118,20 @@ public class Game implements Serializable {
       invisible.add(blackCard);
     }
 
-    protected VCard pollCard(Player player) {
-      switch (player) {
-        case BLACK:
-          return deckBlack.poll();
-        case WHITE:
-          return deckWhite.poll();
-        default:
-          return null;
-      }
-    }
   }
 
+  // Registered cards in game
   protected List<Card> registeredCards;
   protected Table table = new Table();
-  protected EventQueue events = new EventQueue();
+  // We let it be public, because we dont read eventqueue inside game logic
+  // Client can do anything with it.
+  // NOTE: You can also use game.getEvents();
+  public EventQueue events = new EventQueue();
 
   protected String whiteUsername = null;
   protected String blackUsername = "Roboter";
 
+  // --- Constructors ---
   public Game() {
     registeredCards = Arrays.asList(new Default().cards);
   }
@@ -122,7 +144,8 @@ public class Game implements Serializable {
     registeredCards = cards;
   }
 
-  // Load game from fs
+  // --- Save/Load game to/form fs ---
+  /** Load game from fs */
   public static Game load(String path) throws Exception {
     // Reading the object from a file
     FileInputStream file = new FileInputStream(path);
@@ -137,7 +160,7 @@ public class Game implements Serializable {
     return game;
   }
 
-  // Save game to fs
+  /** Save game to fs */
   public void save(String path, String name) throws Exception {
     // Create dirs if does not exists
     Files.createDirectories(Paths.get(path));
@@ -154,19 +177,29 @@ public class Game implements Serializable {
     file.close();
   }
 
+  // --- Getters and Setters ---
   /** Set username */
   public void setUsername(Player player, String username) {
     switch (player) {
       case WHITE:
-        this.whiteUsername = username ;
+        this.whiteUsername = username;
         break;
       default:
-        this.blackUsername = username ;
+        this.blackUsername = username;
         break;
     }
   }
 
-  /** Getusername */
+  public Queue<Event> getEvents(){
+    return this.events.evQueue;   
+  }
+
+  /** Get table to look up the state of game */
+  public Table getTable() {
+    return this.table;
+  }
+
+  /** Get username */
   public String getUsername(Player player) {
     switch (player) {
       case WHITE:
@@ -176,19 +209,29 @@ public class Game implements Serializable {
     }
   }
 
+  /**
+   * Get score of white player, basically means amount cards in white player's
+   * deck
+   */
   public int getScoreWhite() {
     return table.deckWhite.size();
   }
 
+  /**
+   * Get score of black player, basically means amount cards in black player's
+   * deck
+   */
   public int getScoreBlack() {
     return table.deckBlack.size();
   }
 
+  /** Get path to png image of given {@link VCard} */
   public String getAssetPath(VCard vCard) {
     var card = registeredCards.get(vCard.cardIdx);
     return card.getAssetPath(vCard.suit);
   }
 
+  // --- Dispatching decks ---
   public void dispatchDecks() {
     dispatchDecks(new Random().nextInt(), false);
   }
@@ -272,7 +315,10 @@ public class Game implements Serializable {
 
   // Perform actions according to current table
   public void playRound() {
-    // Remove visible cards from table, since they are being moved in winner's deck in previous round
+    // Clear events on each round start
+    events.evQueue.clear();
+    // Remove visible cards from table, since they are being moved in winner's deck
+    // in previous round
     // Or if war was declared, they were moved in invisible deck
     // NOTE: We keep it cached between rounds, to reflect last state on table
     table.cardBlack = null;

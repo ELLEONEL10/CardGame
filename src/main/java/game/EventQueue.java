@@ -44,7 +44,7 @@ import java.util.function.Consumer;
  * </pre>
  * 
  */
-class EventQueue implements Serializable {
+public class EventQueue implements Serializable {
   public enum Player {
     WHITE(0), BLACK(1);
     int idx;
@@ -171,12 +171,12 @@ class EventQueue implements Serializable {
      */
     COMPARE_CARDS;
 
-    Player winner = null;
+    public Player winner = null;
 
     /** Amount of invisible (face down) cards */
-    Integer cardAmount = null;
-    VCard whiteCard = null;
-    VCard blackCard = null;
+    public Integer cardAmount = null;
+    public VCard whiteCard = null;
+    public VCard blackCard = null;
 
     /** Helper function to create event fast */
     public static Event create(Event e, Player winner, Integer cardAmount, VCard whiteCard, VCard blackCard){
