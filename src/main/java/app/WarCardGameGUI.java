@@ -1,6 +1,6 @@
 package app;
 
-<<<<<<< HEAD
+
 import game.Game;
 import game.EventQueue;
 import game.EventQueue.Event;
@@ -15,7 +15,7 @@ import javax.swing.border.EmptyBorder;
 import cards.VCard;
 
 import java.awt.*;
-=======
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -24,7 +24,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
->>>>>>> 1ac0d6dbb1d2466f7d90ec78d8c645fba892616b
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -192,6 +192,7 @@ public class WarCardGameGUI extends JFrame {
   }
   
   private void Update() {
+    resultLabel.setText(null);
     
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
@@ -206,14 +207,19 @@ public class WarCardGameGUI extends JFrame {
     player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon( game.getAssetPath(whiteCard)) : cardBackIcon );
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon( game.getAssetPath(blackCard)) : cardBackIcon);
 
+    if (game.getTable().isWar()) 
+      resultLabel.setIcon(tieIcon);
+    else
+    resultLabel.setIcon((game.getTable().getCardWhite().cardIdx>game.getTable().getCardBlack().cardIdx)? winIcon : loseIcon);
     
     
   }
   
 
   private void GameFinishedSate(Event e){
-
     backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+    revalidate();
+    repaint();
     if (e.winner == null)
           resultLabel.setIcon(tieIcon);
         else
@@ -316,6 +322,8 @@ public class WarCardGameGUI extends JFrame {
         e1.printStackTrace();
       }
       backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+      revalidate();
+      repaint();
       Update();
 
     });
