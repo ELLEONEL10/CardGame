@@ -107,6 +107,9 @@ public class Game implements Serializable {
   protected Table table = new Table();
   protected EventQueue events = new EventQueue();
 
+  protected String whiteUsername = null;
+  protected String blackUsername = "Roboter";
+
   public Game() {
     registeredCards = Arrays.asList(new Default().cards);
   }
@@ -149,6 +152,28 @@ public class Game implements Serializable {
 
     out.close();
     file.close();
+  }
+
+  /** Set username */
+  public void setUsername(Player player, String username) {
+    switch (player) {
+      case WHITE:
+        this.whiteUsername = username ;
+        break;
+      default:
+        this.blackUsername = username ;
+        break;
+    }
+  }
+
+  /** Getusername */
+  public String getUsername(Player player) {
+    switch (player) {
+      case WHITE:
+        return this.whiteUsername;
+      default:
+        return this.blackUsername;
+    }
   }
 
   public int getScoreWhite() {
