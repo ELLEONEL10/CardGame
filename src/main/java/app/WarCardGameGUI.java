@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,20 +171,9 @@ public class WarCardGameGUI extends JFrame {
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon( game.getAssetPath(blackCard)) : cardBackIcon);
   }
 
-  private void initGame() {
-    game = new Game();
-    game.dispatchDecks();
-  }
 
-  private void playRound() {
-    game.playRound();
-    
-    System.out.println(game.getEvents());
-    for (var e : game.getEvents()) {
-      switch (e) {
-
-        case GAME_FINISH:
-        if (e.winner == null)
+  private void GameFinishedSate(Event e){
+    if (e.winner == null)
           resultLabel.setIcon(tieIcon);
         else
         switch (e.winner) {
@@ -200,6 +190,21 @@ public class WarCardGameGUI extends JFrame {
             player2ScoreLabel.setText("Cards left: 52");
             break;
         }
+  }
+  private void initGame() {
+    game = new Game();
+    game.dispatchDecks();
+  }
+
+  private void playRound() {
+    game.playRound();
+    
+    System.out.println(game.getEvents());
+    for (var e : game.getEvents()) {
+      switch (e) {
+
+        case GAME_FINISH:
+        GameFinishedSate(e);
         break;
         
         case POLL_CARDS:
@@ -272,21 +277,58 @@ public class WarCardGameGUI extends JFrame {
       }
       Update();
     });
-    fileMenu.add(newGameItem);
-    fileMenu.add(saveButtonItem);
-    fileMenu.add(loadButtonItem);
-    menuBar.add(fileMenu);
+        fileMenu.add(newGameItem);
+        fileMenu.add(saveButtonItem);
+        fileMenu.add(loadButtonItem);
+        menuBar.add(fileMenu);
 
-    JMenu aboutMenu = new JMenu("About");
-    JMenuItem aboutItem = new JMenuItem("About Us");
-    aboutItem.addActionListener(
-        e -> JOptionPane.showMessageDialog(this, "Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova, \r\n" + //
-            "Ömer Duran, Danylo Bazalinskyi, G. V."));
-    aboutMenu.add(aboutItem);
-    menuBar.add(aboutMenu);
+        JMenu rulesMenu = new JMenu("Rules");
+        JMenuItem rulesItem = new JMenuItem("View Rules");
+        rulesItem.addActionListener(e -> JOptionPane.showMessageDialog(this,
+            "The objective of the game is to win all of the cards.\n" +
+            "The deck is divided evenly and randomly among the players,\n" + 
+            " giving each a down stack. In unison, each player reveals the\n" + 
+            " top card of their deck - this is a \"battle\" - and the player with\n" + 
+            " the higher card takes both of the cards played and moves them to their stack.\n" + 
+            " Aces are high, and suits are ignored.\n" +
+            "If the two cards played are of equal value,\n" + 
+            " then there is a war. Both players place the next 2 cards from their pile \n" + 
+            "face down and then another card face-up. The owner of the higher face-up card\n" + 
+            "wins the war and adds all the cards on the table to the bottom of their deck.\n" + 
+            "If the face-up cards are again equal then the battle repeats with another set of \n" + 
+            "face-down/up cards. This repeats until one player's face-up card is higher than their opponent's.\n" +
+            "If a player runs out of cards during a war, that player immediately loses.\n" + 
+            "In others, the player may play the last card in their deck as their face-up card for the remainder\n" + 
+            "of the war or replay the game from the beginning.\n" +
+            "The game will continue until one player has collected all of the cards."
+        ));
+        rulesMenu.add(rulesItem);
+        menuBar.add(rulesMenu);
 
-    setJMenuBar(menuBar);
-  }
+        JMenu aboutMenu = new JMenu("About");
+        JMenuItem aboutItem = new JMenuItem("About Us");
+        aboutItem.addActionListener(e -> {
+            JLabel label = new JLabel("<html>Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova,<br>" +
+                    "Ömer Duran, Danylo Bazalinskyi, G. V.<br><br>" +
+                    "<a href='https://github.com/ELLEONEL10/CardGame'>CLICK HERE</a> for GitHub Repo.</html>");
+            label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            label.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame"));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            JOptionPane.showMessageDialog(this, label, "About Us", JOptionPane.INFORMATION_MESSAGE);
+        });
+        aboutMenu.add(aboutItem);
+        menuBar.add(aboutMenu);
+
+        setJMenuBar(menuBar);
+    }
 
   private void playSound(String soundFile) {
     try {
