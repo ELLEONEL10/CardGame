@@ -2,7 +2,6 @@ package cards;
 
 import java.io.Serializable;
 
-import cards.Suit;
 
 public class VCard implements Serializable{
   // Index of card among registered cards
