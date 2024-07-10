@@ -224,10 +224,10 @@ public class WarCardGameGUI extends JFrame {
     
     
     resultLabel.setText(null);
+    System.err.println(game.getUsername(Player.WHITE));
+    player1NameField.setText((game.getUsername(Player.WHITE).equals(""))? "Player 1" :game.getUsername(Player.WHITE));
+    player2NameField.setText((game.getUsername(Player.BLACK).equals(""))? "Computer" :game.getUsername(Player.BLACK));
     
-    player1NameField.setText(game.getUsername(Player.WHITE));
-    player2NameField.setText(game.getUsername(Player.BLACK));
-
     
 
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
