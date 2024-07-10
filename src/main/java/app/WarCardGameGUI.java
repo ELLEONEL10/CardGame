@@ -14,16 +14,6 @@ import javax.swing.border.EmptyBorder;
 import cards.VCard;
 
 import java.awt.*;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Image;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -152,23 +142,26 @@ public class WarCardGameGUI extends JFrame {
       }
     });
 
+    initGame();
+
     bottomPanel.add(scorePanel, BorderLayout.CENTER);
+    
     bottomPanel.add(playButton, BorderLayout.SOUTH);
 
     mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
     // User and computer panels with padding and titles
-    JPanel userPanel = createUserPanelWithTitle("assets/images/user.png", player1CardLabel, "Player 1");
-    userPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    JPanel whitePanel = createUserPanelWithTitle("assets/images/user.png", player1CardLabel, "Player 1");
+    whitePanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
-    JPanel computerPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
-    computerPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    JPanel blackPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
+    blackPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
 
-    mainPanel.add(userPanel, BorderLayout.WEST);
-    mainPanel.add(computerPanel, BorderLayout.EAST);
+    mainPanel.add(whitePanel, BorderLayout.WEST);
+    mainPanel.add(blackPanel, BorderLayout.EAST);
 
     createMenuBar();
-    initGame();
+    
 
     playSound("assets/sounds/start.wav");
 
@@ -228,7 +221,14 @@ public class WarCardGameGUI extends JFrame {
   }
 
   private void Update() {
+    
+    
     resultLabel.setText(null);
+    
+    player1NameField.setText(game.getUsername(Player.WHITE));
+    player2NameField.setText(game.getUsername(Player.BLACK));
+
+    
 
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
@@ -280,6 +280,8 @@ public class WarCardGameGUI extends JFrame {
   private void initGame() {
     game = new Game();
     game.dispatchDecks();
+    game.setUsername(Player.WHITE, "Player 1");
+    game.setUsername(Player.BLACK, "Computer");
   }
 
   private void playRound() {
@@ -332,6 +334,8 @@ public class WarCardGameGUI extends JFrame {
     JMenuItem loadButtonItem = new JMenuItem("Load");
     newGameItem.addActionListener(e -> {
       initGame();
+      player1NameField.setText(game.getUsername(Player.WHITE));
+      player2NameField.setText(game.getUsername(Player.BLACK));
       playButton.setEnabled(true);
       player1ScoreLabel.setText("Cards left: 26");
       player2ScoreLabel.setText("Cards left: 26");
@@ -356,11 +360,18 @@ public class WarCardGameGUI extends JFrame {
       } catch (Exception e1) {
         e1.printStackTrace();
       }
+
       backgroundImg = new ImageIcon("assets/images/background.png").getImage();
       revalidate();
       repaint();
-      Update();
+      Update(); 
 
+    });
+    player1NameField.addActionListener(e -> {
+      game.setUsername(Player.WHITE,player1NameField.getText());
+    });
+    player2NameField.addActionListener(e -> {
+      game.setUsername(Player.BLACK,player2NameField.getText());
     });
     fileMenu.add(newGameItem);
     fileMenu.add(saveButtonItem);
