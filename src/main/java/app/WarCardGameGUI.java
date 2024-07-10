@@ -1,7 +1,6 @@
 package app;
 
 import game.Game;
-import game.EventQueue;
 import game.EventQueue.Event;
 import game.EventQueue.Player;
 
@@ -10,57 +9,37 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
-import cards.VCard;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.*;
-import java.awt.*;
-
-import game.EventQueue.Event;
-import game.EventQueue.Player;
-import game.Game;
-
 public class WarCardGameGUI extends JFrame {
 
+  // UI Components
   private JLabel player1CardLabel;
   private JLabel player2CardLabel;
   private JLabel player1ScoreLabel;
   private JLabel player2ScoreLabel;
   private JLabel resultLabel;
+  private JLabel player1TieCardsLabel;
+  private JLabel player2TieCardsLabel;
+  private JLabel player1TieCardsTextLabel;
+  private JLabel player2TieCardsTextLabel;
   private JButton playButton;
   private ImageIcon cardBackIcon;
   private ImageIcon winIcon;
   private ImageIcon loseIcon;
   private ImageIcon tieIcon;
-  private Game game = null;
-  Image backgroundImg;
+  private Game game = null; // Instance of the game logic
+  Image backgroundImg; // Background image
   private JTextField player1NameField;
   private JTextField player2NameField;
-  private JLabel cardCountLabel; 
 
+  // Constructor for the GUI
   public WarCardGameGUI() {
+    // Setting up the main frame
     setTitle("War Card Game");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
@@ -77,15 +56,17 @@ public class WarCardGameGUI extends JFrame {
     int width = 1080;
     int height = width * 13 / 20;
 
+    // Main panel with background image
     JPanel mainPanel = new JPanel(new BorderLayout()) {
       @Override
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        // Switch background based on game state (war or normal)
         if (game.getTable().isWar()) {
           backgroundImg = new ImageIcon("assets/images/backgroundw.png").getImage();
-        } else
+        } else {
           backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+        }
         g.drawImage(backgroundImg, 0, 0, getWidth(), getHeight(), this);
       }
     };
@@ -94,44 +75,90 @@ public class WarCardGameGUI extends JFrame {
     JPanel topPanel = new JPanel(new BorderLayout());
     topPanel.setOpaque(false);
 
+    // Panel to hold the player cards and result label
     JPanel cardsPanel = new JPanel(new GridLayout(1, 3, 80, 0));
     cardsPanel.setOpaque(false);
     cardsPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50)); // Adjust margin
 
+    // Player 1's card label
     player1CardLabel = new JLabel(cardBackIcon);
     player1CardLabel.setHorizontalAlignment(JLabel.CENTER);
 
+    // Result label to show the outcome of each round
     resultLabel = new JLabel("", JLabel.CENTER);
 
+    // Player 2's card label
     player2CardLabel = new JLabel(cardBackIcon);
     player2CardLabel.setHorizontalAlignment(JLabel.CENTER);
 
-    cardsPanel.add(player1CardLabel);
-    cardsPanel.add(resultLabel);
-    cardsPanel.add(player2CardLabel);
+    // Labels for additional cards during a tie
+    player1TieCardsLabel = new JLabel(cardBackIcon);
+    player1TieCardsLabel.setHorizontalAlignment(JLabel.CENTER);
+    player1TieCardsLabel.setVisible(false); // Initially hidden
 
+    player2TieCardsLabel = new JLabel(cardBackIcon);
+    player2TieCardsLabel.setHorizontalAlignment(JLabel.CENTER);
+    player2TieCardsLabel.setVisible(false); // Initially hidden
+
+    // Text labels for "Cards: 2" during a tie
+    player1TieCardsTextLabel = new JLabel("Cards: 2", JLabel.CENTER);
+    player1TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    player1TieCardsTextLabel.setForeground(Color.BLACK);
+    player1TieCardsTextLabel.setVisible(false); // Initially hidden
+
+    player2TieCardsTextLabel = new JLabel("Cards: 2", JLabel.CENTER);
+    player2TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    player2TieCardsTextLabel.setForeground(Color.BLACK);
+    player2TieCardsTextLabel.setVisible(false); // Initially hidden
+
+    // Panel for Player 1's card and tie information
+    JPanel player1Panel = new JPanel(new BorderLayout());
+    player1Panel.setOpaque(false);
+    player1Panel.add(player1CardLabel, BorderLayout.CENTER);
+    player1Panel.add(player1TieCardsLabel, BorderLayout.WEST);
+    player1Panel.add(player1TieCardsTextLabel, BorderLayout.SOUTH);
+
+    // Panel for Player 2's card and tie information
+    JPanel player2Panel = new JPanel(new BorderLayout());
+    player2Panel.setOpaque(false);
+    player2Panel.add(player2CardLabel, BorderLayout.CENTER);
+    player2Panel.add(player2TieCardsLabel, BorderLayout.EAST);
+    player2Panel.add(player2TieCardsTextLabel, BorderLayout.SOUTH);
+
+    // Adding player panels and result label to cardsPanel
+    cardsPanel.add(player1Panel);
+    cardsPanel.add(resultLabel);
+    cardsPanel.add(player2Panel);
+
+    // Adding cardsPanel to topPanel
     topPanel.add(cardsPanel, BorderLayout.CENTER);
 
+    // Adding topPanel to mainPanel
     mainPanel.add(topPanel, BorderLayout.CENTER);
 
     // Bottom panel with scores and play button
     JPanel bottomPanel = new JPanel(new BorderLayout());
     bottomPanel.setOpaque(false);
 
+    // Panel to hold the score labels
     JPanel scorePanel = new JPanel(new GridLayout(1, 2));
     scorePanel.setOpaque(false);
 
+    // Score label for Player 1
     player1ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
     player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     player1ScoreLabel.setForeground(Color.BLACK);
 
+    // Score label for Player 2
     player2ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
     player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     player2ScoreLabel.setForeground(Color.BLACK);
 
+    // Adding score labels to scorePanel
     scorePanel.add(player1ScoreLabel);
     scorePanel.add(player2ScoreLabel);
 
+    // Play button to start the round
     playButton = new JButton("Play");
     playButton.setFont(new Font("Arial", Font.BOLD, 18));
     playButton.addActionListener(new ActionListener() {
@@ -142,59 +169,41 @@ public class WarCardGameGUI extends JFrame {
       }
     });
 
+    // Initialize the game
     initGame();
 
+    // Adding scorePanel and playButton to bottomPanel
     bottomPanel.add(scorePanel, BorderLayout.CENTER);
-    
     bottomPanel.add(playButton, BorderLayout.SOUTH);
 
+    // Adding bottomPanel to mainPanel
     mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
     // User and computer panels with padding and titles
     JPanel whitePanel = createUserPanelWithTitle("assets/images/user.png", player1CardLabel, "Player 1");
-    whitePanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    whitePanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Add padding
 
     JPanel blackPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
-    blackPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding
+    blackPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Add padding
 
+    // Adding user panels to mainPanel
     mainPanel.add(whitePanel, BorderLayout.WEST);
     mainPanel.add(blackPanel, BorderLayout.EAST);
 
+    // Create the menu bar
     createMenuBar();
-    
 
+    // Play the start sound
     playSound("assets/sounds/start.wav");
 
+    // Adding mainPanel to the frame
     add(mainPanel, BorderLayout.CENTER);
     setSize(width, height); // Set size based on aspect ratio
-    setLocationRelativeTo(null);
-    setVisible(true);
-
-    
-    JPanel cardCountPanel = new JPanel() {
-      @Override
-      protected void paintComponent(Graphics g) {
-          super.paintComponent(g);
-          Image cardBgImage = new ImageIcon("assets/images/cardbg.png").getImage();
-          g.drawImage(cardBgImage, 0, 0, getWidth(), getHeight(), this);
-      }
-  };
-  cardCountPanel.setLayout(new BorderLayout());
-  cardCountPanel.setPreferredSize(new Dimension(250, 320));
-  cardCountPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-  cardCountLabel = new JLabel("Cards: 0", JLabel.CENTER);
-  cardCountLabel.setFont(new Font("Arial", Font.BOLD, 24));
-  cardCountLabel.setForeground(Color.WHITE);
-  cardCountPanel.add(cardCountLabel, BorderLayout.CENTER);
-
-  JPanel bottomRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-  bottomRightPanel.setOpaque(false);
-  bottomRightPanel.add(cardCountPanel);
-
-  add(bottomRightPanel, BorderLayout.SOUTH);
+    setLocationRelativeTo(null); // Center the window
+    setVisible(true); // Make the window visible
   }
 
+  // Method to create user panel with title
   private JPanel createUserPanelWithTitle(String imagePath, JLabel cardLabel, String title) {
     JPanel panel = new JPanel(new BorderLayout());
     panel.setOpaque(false);
@@ -204,6 +213,7 @@ public class WarCardGameGUI extends JFrame {
     titleField.setForeground(Color.BLACK);
     titleField.setHorizontalAlignment(JTextField.CENTER);
 
+    // Assigning to appropriate field based on title
     if (title.equals("Player 1")) {
         player1NameField = titleField;
     } else {
@@ -213,6 +223,7 @@ public class WarCardGameGUI extends JFrame {
     JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
 
+    // Adding components to the panel
     panel.add(titleField, BorderLayout.NORTH);
     panel.add(imageLabel, BorderLayout.CENTER);
     panel.add(cardLabel, BorderLayout.SOUTH);
@@ -220,164 +231,181 @@ public class WarCardGameGUI extends JFrame {
     return panel;
   }
 
+  // Method to update the UI based on game state
   private void Update() {
-    
-    
-    resultLabel.setText(null);
-    System.err.println(game.getUsername(Player.WHITE));
-    player1NameField.setText((game.getUsername(Player.WHITE).equals(""))? "Player 1" :game.getUsername(Player.WHITE));
-    player2NameField.setText((game.getUsername(Player.BLACK).equals(""))? "Computer" :game.getUsername(Player.BLACK));
-    
-    
+    resultLabel.setText(null); // Clear previous result text
+    System.err.println(game.getUsername(Player.WHITE)); // Debugging output
+    player1NameField.setText((game.getUsername(Player.WHITE).equals("")) ? "Player 1" : game.getUsername(Player.WHITE));
+    player2NameField.setText((game.getUsername(Player.BLACK).equals("")) ? "Computer" : game.getUsername(Player.BLACK));
 
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
-    resultLabel.setIcon(null);
+    resultLabel.setIcon(null); // Clear previous result icon
 
+    // Get the current cards for each player
     var whiteCard = game.getTable().getCardWhite();
     var blackCard = game.getTable().getCardBlack();
 
+    // Update card labels based on the current cards
     player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon(game.getAssetPath(whiteCard)) : cardBackIcon);
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon(game.getAssetPath(blackCard)) : cardBackIcon);
 
-    int totalCards = game.getTable().getDeckSize(Player.WHITE) + game.getTable().getDeckSize(Player.BLACK);
-    cardCountLabel.setText("Cards: " + totalCards);
+    // Check if the game is in a tie state
+    boolean isTie = game.getTable().isWar();
+    player1TieCardsLabel.setVisible(isTie); // Show or hide based on tie state
+    player2TieCardsLabel.setVisible(isTie); // Show or hide based on tie state
+    player1TieCardsTextLabel.setVisible(isTie); // Show or hide based on tie state
+    player2TieCardsTextLabel.setVisible(isTie); // Show or hide based on tie state
 
-    if (game.getTable().isWar())
-      resultLabel.setIcon(tieIcon);
-    else
+    // Set the result icon based on the game state
+    if (isTie) {
+      resultLabel.setIcon(tieIcon); // Show tie icon if it's a tie
+    } else {
       resultLabel.setIcon((game.getTable().getCardWhite().cardIdx > game.getTable().getCardBlack().cardIdx) ? winIcon : loseIcon);
-
-    
+    }
   }
 
+  // Method to update the game state when the game is finished
   private void GameFinishedSate(Event e) {
-    backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+    backgroundImg = new ImageIcon("assets/images/background.png").getImage(); // Set background image to default
     revalidate();
     repaint();
-    if (e.winner == null)
-      resultLabel.setIcon(tieIcon);
-    else
+    if (e.winner == null) {
+      resultLabel.setIcon(tieIcon); // Show tie icon if the game ends in a tie
+    } else {
+      // Update UI based on the winner
       switch (e.winner) {
         case WHITE:
           resultLabel.setIcon(winIcon);
-          player2CardLabel.setIcon(null);
-          resultLabel.setText(player1NameField.getText() + " wins the game!");
+          player2CardLabel.setIcon(null); // Clear Player 2's card
+          resultLabel.setText(player1NameField.getText() + " wins the game!"); // Display winning message
           player1ScoreLabel.setText("Cards left: 52 ");
           player2ScoreLabel.setText("Cards left: 0");
           break;
         case BLACK:
           resultLabel.setIcon(loseIcon);
-          player1CardLabel.setIcon(null);
-          resultLabel.setText(player2NameField.getText() + " wins the game!");
+          player1CardLabel.setIcon(null); // Clear Player 1's card
+          resultLabel.setText(player2NameField.getText() + " wins the game!"); // Display winning message
           player1ScoreLabel.setText("Cards left: 0 ");
           player2ScoreLabel.setText("Cards left: 52");
           break;
       }
+    }
   }
 
+  // Method to initialize the game
   private void initGame() {
-    game = new Game();
-    game.dispatchDecks();
-    game.setUsername(Player.WHITE, "Player 1");
-    game.setUsername(Player.BLACK, "Computer");
+    game = new Game(); // Create a new game instance
+    game.dispatchDecks(); // Distribute the decks to players
+    game.setUsername(Player.WHITE, "Player 1"); // Set username for Player 1
+    game.setUsername(Player.BLACK, "Computer"); // Set username for Player 2
   }
 
+  // Method to play a round of the game
   private void playRound() {
-    game.playRound();
+    game.playRound(); // Play a round in the game
 
-    System.out.println(game.getEvents());
+    System.out.println(game.getEvents()); // Debugging output
     for (var e : game.getEvents()) {
+      // Handle different types of game events
       switch (e) {
-
         case POLL_CARDS:
-          Update();
+          Update(); // Update UI when cards are polled
           break;
-
         case COMPARE_CARDS:
-          System.out.println(e.winner);
+          System.out.println(e.winner); // Debugging output
           if (e.winner == null) {
-            resultLabel.setIcon(tieIcon);
-            playSound("assets/sounds/tie.wav");
-          } else
+            resultLabel.setIcon(tieIcon); // Show tie icon if there's no winner
+            playSound("assets/sounds/tie.wav"); // Play tie sound
+          } else {
+            // Update UI based on the winner
             switch (e.winner) {
               case WHITE:
-                playSound("assets/sounds/win.wav");
-                resultLabel.setIcon(winIcon);
+                playSound("assets/sounds/win.wav"); // Play win sound
+                resultLabel.setIcon(winIcon); // Show win icon for Player 1
                 break;
-
               case BLACK:
-                resultLabel.setIcon(loseIcon);
-                playSound("assets/sounds/lose.wav");
+                resultLabel.setIcon(loseIcon); // Show lose icon for Player 1
+                playSound("assets/sounds/lose.wav"); // Play lose sound
                 break;
             }
+          }
           break;
-
         case GAME_FINISH:
-          GameFinishedSate(e);
+          GameFinishedSate(e); // Update UI when the game finishes
           break;
       }
-
     }
 
     revalidate();
     repaint();
   }
 
+  // Method to create the menu bar
   private void createMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
+    JMenuBar menuBar = new JMenuBar(); // Create a menu bar
 
+    // File menu with New Game, Save, and Load options
     JMenu fileMenu = new JMenu("File");
     JMenuItem newGameItem = new JMenuItem("New Game");
     JMenuItem saveButtonItem = new JMenuItem("Save");
     JMenuItem loadButtonItem = new JMenuItem("Load");
+
+    // Action listener for new game
     newGameItem.addActionListener(e -> {
-      initGame();
-      player1NameField.setText(game.getUsername(Player.WHITE));
-      player2NameField.setText(game.getUsername(Player.BLACK));
-      playButton.setEnabled(true);
-      player1ScoreLabel.setText("Cards left: 26");
-      player2ScoreLabel.setText("Cards left: 26");
-      resultLabel.setText("");
-      resultLabel.setIcon(null);
-
-      player1CardLabel.setIcon(cardBackIcon);
-      player2CardLabel.setIcon(cardBackIcon);
+      initGame(); // Initialize a new game
+      player1NameField.setText(game.getUsername(Player.WHITE)); // Update Player 1's name
+      player2NameField.setText(game.getUsername(Player.BLACK)); // Update Player 2's name
+      playButton.setEnabled(true); // Enable the play button
+      player1ScoreLabel.setText("Cards left: 26"); // Reset score label
+      player2ScoreLabel.setText("Cards left: 26"); // Reset score label
+      resultLabel.setText(""); // Clear result text
+      resultLabel.setIcon(null); // Clear result icon
+      player1CardLabel.setIcon(cardBackIcon); // Reset Player 1's card
+      player2CardLabel.setIcon(cardBackIcon); // Reset Player 2's card
     });
+
+    // Action listener for save game
     saveButtonItem.addActionListener(e -> {
-      System.out.println("Saved");
+      System.out.println("Saved"); // Debugging output
       try {
-        this.game.save("./saves", "gameState");
+        this.game.save("./saves", "gameState"); // Save the game state
       } catch (Exception e1) {
-        e1.printStackTrace();
+        e1.printStackTrace(); // Print any errors
       }
     });
+
+    // Action listener for load game
     loadButtonItem.addActionListener(e -> {
-      System.out.println("Loaded");
+      System.out.println("Loaded"); // Debugging output
       try {
-        this.game = Game.load("./saves/gameState");
+        this.game = Game.load("./saves/gameState"); // Load the game state
       } catch (Exception e1) {
-        e1.printStackTrace();
+        e1.printStackTrace(); // Print any errors
       }
 
-      backgroundImg = new ImageIcon("assets/images/background.png").getImage();
+      backgroundImg = new ImageIcon("assets/images/background.png").getImage(); // Reset background image
       revalidate();
       repaint();
-      Update(); 
-
+      Update(); // Update UI
     });
+
+    // Action listeners for name fields to update game state
     player1NameField.addActionListener(e -> {
-      game.setUsername(Player.WHITE,player1NameField.getText());
+      game.setUsername(Player.WHITE, player1NameField.getText()); // Update Player 1's name
     });
     player2NameField.addActionListener(e -> {
-      game.setUsername(Player.BLACK,player2NameField.getText());
+      game.setUsername(Player.BLACK, player2NameField.getText()); // Update Player 2's name
     });
+
+    // Add items to file menu
     fileMenu.add(newGameItem);
     fileMenu.add(saveButtonItem);
     fileMenu.add(loadButtonItem);
     menuBar.add(fileMenu);
 
+    // Rules menu with View Rules option
     JMenu rulesMenu = new JMenu("Rules");
     JMenuItem rulesItem = new JMenuItem("View Rules");
     rulesItem.addActionListener(e -> JOptionPane.showMessageDialog(this,
@@ -401,6 +429,7 @@ public class WarCardGameGUI extends JFrame {
     rulesMenu.add(rulesItem);
     menuBar.add(rulesMenu);
 
+    // About menu with About Us option
     JMenu aboutMenu = new JMenu("About");
     JMenuItem aboutItem = new JMenuItem("About Us");
     aboutItem.addActionListener(e -> {
@@ -412,9 +441,9 @@ public class WarCardGameGUI extends JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame"));
+                    Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame")); // Open GitHub repo in browser
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    ex.printStackTrace(); // Print any errors
                 }
             }
         });
@@ -423,21 +452,24 @@ public class WarCardGameGUI extends JFrame {
     aboutMenu.add(aboutItem);
     menuBar.add(aboutMenu);
 
+    // Set the menu bar to the frame
     setJMenuBar(menuBar);
   }
 
+  // Method to play a sound
   private void playSound(String soundFile) {
     try {
       File f = new File(soundFile);
       AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
       Clip clip = AudioSystem.getClip();
       clip.open(audioIn);
-      clip.start();
+      clip.start(); // Play the sound
     } catch (Exception e) {
-      e.printStackTrace();
+      e.printStackTrace(); // Print any errors
     }
   }
 
+  // Main method to start the GUI
   public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> new WarCardGameGUI());
   }
