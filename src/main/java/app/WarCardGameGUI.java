@@ -421,6 +421,7 @@ public class WarCardGameGUI extends JFrame {
     });
     player2NameField.addActionListener(e -> {
       game.setUsername(Player.BLACK, player2NameField.getText()); // Update Player 2's name
+      toggleBlackIcon((game.getUsername(Player.BLACK)).equals("Computer")? false:true);
     });
 
     // Add items to file menu
