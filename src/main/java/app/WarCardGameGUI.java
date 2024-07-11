@@ -188,7 +188,7 @@ public class WarCardGameGUI extends JFrame {
     blackPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Add padding
 
     player2IconLabel = (JLabel) blackPanel.getComponent(1);
-    ;
+    toggleBlackIcon(false);
     // Adding user panels to mainPanel
     mainPanel.add(whitePanel, BorderLayout.WEST);
     mainPanel.add(blackPanel, BorderLayout.EAST);
