@@ -251,7 +251,7 @@ public class WarCardGameGUI extends JFrame {
     player2NameField.setText((game.getUsername(Player.BLACK).equals("")) ? "Computer" : game.getUsername(Player.BLACK));
     game.setUsername(Player.BLACK, (game.getUsername(Player.BLACK).equals("")) ? "Computer" : game.getUsername(Player.BLACK));
     System.out.println(game.getUsername(Player.BLACK));
-    toggleBlackIcon((game.getUsername(Player.BLACK)).equals("Computer")? false:true);
+    toggleBlackIcon((game.getUsername(Player.BLACK)).toLowerCase().equals("computer")? false:true);
     
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
@@ -388,7 +388,7 @@ public class WarCardGameGUI extends JFrame {
       player2TieCardsLabel.setVisible(false); //hide tie cards
       player1TieCardsTextLabel.setVisible(false); //hide tie cards
       player2TieCardsTextLabel.setVisible(false); //hide tie cards
-      toggleBlackIcon((game.getUsername(Player.BLACK)).equals("Computer")? false:true);
+      toggleBlackIcon((game.getUsername(Player.BLACK)).toLowerCase().equals("computer")? false:true);
     });
 
     // Action listener for save game
