@@ -242,8 +242,8 @@ public class WarCardGameGUI extends JFrame {
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
 
-    player1TieCardsTextLabel.setText("Cards"+ game.getTable().getInvisible()/2);// Update labels during war
-    player2TieCardsTextLabel.setText("Cards"+ game.getTable().getInvisible()/2);// Update labels during war
+    player1TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
+    player2TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
 
 
     resultLabel.setIcon(null); // Clear previous result icon
