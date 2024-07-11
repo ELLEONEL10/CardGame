@@ -241,6 +241,11 @@ public class WarCardGameGUI extends JFrame {
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
+
+    player1TieCardsTextLabel.setText("Cards"+ game.getTable().getInvisible()/2);// Update labels during war
+    player2TieCardsTextLabel.setText("Cards"+ game.getTable().getInvisible()/2);// Update labels during war
+
+
     resultLabel.setIcon(null); // Clear previous result icon
 
     // Get the current cards for each player
@@ -364,6 +369,10 @@ public class WarCardGameGUI extends JFrame {
       resultLabel.setIcon(null); // Clear result icon
       player1CardLabel.setIcon(cardBackIcon); // Reset Player 1's card
       player2CardLabel.setIcon(cardBackIcon); // Reset Player 2's card
+      player1TieCardsLabel.setVisible(false); //hide tie cards
+      player2TieCardsLabel.setVisible(false); //hide tie cards
+      player1TieCardsTextLabel.setVisible(false); //hide tie cards
+      player2TieCardsTextLabel.setVisible(false); //hide tie cards
     });
 
     // Action listener for save game
