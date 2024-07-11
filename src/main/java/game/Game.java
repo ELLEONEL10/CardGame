@@ -202,15 +202,6 @@ public class Game implements Serializable {
     }
   }
 
-  public Queue<Event> getEvents(){
-    return this.events.evQueue;   
-  }
-
-  /** Get table to look up the state of game */
-  public Table getTable() {
-    return this.table;
-  }
-
   /** Get username */
   public String getUsername(Player player) {
     switch (player) {
@@ -220,6 +211,16 @@ public class Game implements Serializable {
         return this.blackUsername;
     }
   }
+
+  public Queue<Event> getEvents(){
+    return this.events.evQueue;   
+  }
+
+  /** Get table to look up the state of game */
+  public Table getTable() {
+    return this.table;
+  }
+
 
   /**
    * Get score of white player, basically means amount cards in white player's
