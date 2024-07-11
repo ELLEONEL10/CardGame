@@ -100,15 +100,15 @@ public class WarCardGameGUI extends JFrame {
     player2TieCardsLabel.setHorizontalAlignment(JLabel.CENTER);
     player2TieCardsLabel.setVisible(false); // Initially hidden
 
-    // Text labels for "Cards: 2" during a tie
+    // Text labels for "Cards" during a tie
     player1TieCardsTextLabel = new JLabel("Cards: 2", JLabel.CENTER);
-    player1TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    player1TieCardsTextLabel.setForeground(Color.BLACK);
+    player1TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 24));
+    player1TieCardsTextLabel.setForeground(Color.YELLOW);
     player1TieCardsTextLabel.setVisible(false); // Initially hidden
 
     player2TieCardsTextLabel = new JLabel("Cards: 2", JLabel.CENTER);
-    player2TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    player2TieCardsTextLabel.setForeground(Color.BLACK);
+    player2TieCardsTextLabel.setFont(new Font("Arial", Font.BOLD, 24));
+    player2TieCardsTextLabel.setForeground(Color.YELLOW);
     player2TieCardsTextLabel.setVisible(false); // Initially hidden
 
     // Panel for Player 1's card and tie information
@@ -146,13 +146,13 @@ public class WarCardGameGUI extends JFrame {
 
     // Score label for Player 1
     player1ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
-    player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-    player1ScoreLabel.setForeground(Color.BLACK);
+    player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 22));
+    player1ScoreLabel.setForeground(Color.YELLOW);
 
     // Score label for Player 2
     player2ScoreLabel = new JLabel("Cards left: 26", JLabel.CENTER);
-    player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-    player2ScoreLabel.setForeground(Color.BLACK);
+    player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 22));
+    player2ScoreLabel.setForeground(Color.YELLOW);
 
     // Adding score labels to scorePanel
     scorePanel.add(player1ScoreLabel);
@@ -160,7 +160,7 @@ public class WarCardGameGUI extends JFrame {
 
     // Play button to start the round
     playButton = new JButton("Play");
-    playButton.setFont(new Font("Arial", Font.BOLD, 18));
+    playButton.setFont(new Font("Arial", Font.BOLD, 24));
     playButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -207,29 +207,33 @@ public class WarCardGameGUI extends JFrame {
   private JPanel createUserPanelWithTitle(String imagePath, JLabel cardLabel, String title) {
     JPanel panel = new JPanel(new BorderLayout());
     panel.setOpaque(false);
-
+  
     JTextField titleField = new JTextField(title, JLabel.CENTER);
-    titleField.setFont(new Font("Arial", Font.BOLD, 18));
-    titleField.setForeground(Color.BLACK);
+    titleField.setFont(new Font("Arial", Font.BOLD, 28));
+    titleField.setForeground(Color.YELLOW);
     titleField.setHorizontalAlignment(JTextField.CENTER);
-
+    titleField.setOpaque(false); // Make the text field transparent
+    titleField.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add margin to the text field
+  
     // Assigning to appropriate field based on title
     if (title.equals("Player 1")) {
-        player1NameField = titleField;
+      player1NameField = titleField;
     } else {
-        player2NameField = titleField;
+      player2NameField = titleField;
     }
-
+  
     JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
     imageLabel.setHorizontalAlignment(JLabel.CENTER);
-
+  
     // Adding components to the panel
     panel.add(titleField, BorderLayout.NORTH);
     panel.add(imageLabel, BorderLayout.CENTER);
     panel.add(cardLabel, BorderLayout.SOUTH);
-
+  
     return panel;
   }
+  
+
 
   // Method to update the UI based on game state
   private void Update() {
@@ -241,10 +245,8 @@ public class WarCardGameGUI extends JFrame {
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
-
-    player1TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
-    player2TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
-
+    player1TieCardsTextLabel.setText("Cards "+ game.getTable().getInvisible()/2);// Update labels during war
+    player2TieCardsTextLabel.setText("Cards "+ game.getTable().getInvisible()/2);// Update labels during war
 
     resultLabel.setIcon(null); // Clear previous result icon
 
