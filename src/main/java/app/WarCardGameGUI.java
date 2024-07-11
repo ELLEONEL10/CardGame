@@ -238,10 +238,10 @@ public class WarCardGameGUI extends JFrame {
 
   private void toggleBlackIcon(boolean isRobot) {
     if (isRobot)
-      player2IconLabel.setIcon(new ImageIcon("assets/images/ai.png"));
+      player2IconLabel.setIcon(new ImageIcon("assets/images/computer.png"));
     else
     // Computer is actually player 2 (black)
-      player2IconLabel.setIcon(new ImageIcon("assets/images/computer.png"));
+      player2IconLabel.setIcon(new ImageIcon("assets/images/ai.png"));
   }
   // Method to update the UI based on game state
   private void Update() {
