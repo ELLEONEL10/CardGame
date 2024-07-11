@@ -388,6 +388,7 @@ public class WarCardGameGUI extends JFrame {
       player2TieCardsLabel.setVisible(false); //hide tie cards
       player1TieCardsTextLabel.setVisible(false); //hide tie cards
       player2TieCardsTextLabel.setVisible(false); //hide tie cards
+      toggleBlackIcon((game.getUsername(Player.BLACK)).equals("Computer")? false:true);
     });
 
     // Action listener for save game
