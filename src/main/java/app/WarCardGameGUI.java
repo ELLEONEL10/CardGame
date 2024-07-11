@@ -249,7 +249,10 @@ public class WarCardGameGUI extends JFrame {
     System.err.println(game.getUsername(Player.WHITE)); // Debugging output
     player1NameField.setText((game.getUsername(Player.WHITE).equals("")) ? "Player 1" : game.getUsername(Player.WHITE));
     player2NameField.setText((game.getUsername(Player.BLACK).equals("")) ? "Computer" : game.getUsername(Player.BLACK));
-
+    game.setUsername(Player.BLACK, (game.getUsername(Player.BLACK).equals("")) ? "Computer" : game.getUsername(Player.BLACK));
+    System.out.println(game.getUsername(Player.BLACK));
+    toggleBlackIcon((game.getUsername(Player.BLACK)).equals("Computer")? false:true);
+    
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
@@ -266,6 +269,7 @@ public class WarCardGameGUI extends JFrame {
     player1CardLabel.setIcon((whiteCard != null) ? new ImageIcon(game.getAssetPath(whiteCard)) : cardBackIcon);
     player2CardLabel.setIcon((blackCard != null) ? new ImageIcon(game.getAssetPath(blackCard)) : cardBackIcon);
 
+    
     // Check if the game is in a tie state
     boolean isTie = game.getTable().isWar();
     player1TieCardsLabel.setVisible(isTie); // Show or hide based on tie state
@@ -315,6 +319,7 @@ public class WarCardGameGUI extends JFrame {
     game.dispatchDecks(); // Distribute the decks to players
     game.setUsername(Player.WHITE, "Player 1"); // Set username for Player 1
     game.setUsername(Player.BLACK, "Computer"); // Set username for Player 2
+    
   }
 
   // Method to play a round of the game
