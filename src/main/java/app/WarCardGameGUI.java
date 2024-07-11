@@ -23,6 +23,7 @@ public class WarCardGameGUI extends JFrame {
   private JLabel player1ScoreLabel;
   private JLabel player2ScoreLabel;
   private JLabel resultLabel;
+  private JLabel player2IconLabel;;
   private JLabel player1TieCardsLabel;
   private JLabel player2TieCardsLabel;
   private JLabel player1TieCardsTextLabel;
@@ -186,6 +187,8 @@ public class WarCardGameGUI extends JFrame {
     JPanel blackPanel = createUserPanelWithTitle("assets/images/computer.png", player2CardLabel, "Computer");
     blackPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Add padding
 
+    player2IconLabel = (JLabel) blackPanel.getComponent(1);
+    ;
     // Adding user panels to mainPanel
     mainPanel.add(whitePanel, BorderLayout.WEST);
     mainPanel.add(blackPanel, BorderLayout.EAST);
@@ -215,9 +218,9 @@ public class WarCardGameGUI extends JFrame {
 
     // Assigning to appropriate field based on title
     if (title.equals("Player 1")) {
-        player1NameField = titleField;
+      player1NameField = titleField;
     } else {
-        player2NameField = titleField;
+      player2NameField = titleField;
     }
 
     JLabel imageLabel = new JLabel(new ImageIcon(imagePath));
@@ -231,6 +234,13 @@ public class WarCardGameGUI extends JFrame {
     return panel;
   }
 
+  private void toggleBlackIcon(boolean isRobot) {
+    if (isRobot)
+      player2IconLabel.setIcon(new ImageIcon("assets/images/computer.png"));
+    else
+      player2IconLabel.setIcon(new ImageIcon("assets/images/user.png"));
+  }
+
   // Method to update the UI based on game state
   private void Update() {
     resultLabel.setText(null); // Clear previous result text
@@ -241,10 +251,8 @@ public class WarCardGameGUI extends JFrame {
     player1ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.WHITE));
     player2ScoreLabel.setText("Cards left: " + game.getTable().getDeckSize(Player.BLACK));
 
-
-    player1TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
-    player2TieCardsTextLabel.setText("Cards  "+ game.getTable().getInvisible()/2);// Update labels during war
-
+    player1TieCardsTextLabel.setText("Cards  " + game.getTable().getInvisible() / 2);// Update labels during war
+    player2TieCardsTextLabel.setText("Cards  " + game.getTable().getInvisible() / 2);// Update labels during war
 
     resultLabel.setIcon(null); // Clear previous result icon
 
@@ -267,7 +275,8 @@ public class WarCardGameGUI extends JFrame {
     if (isTie) {
       resultLabel.setIcon(tieIcon); // Show tie icon if it's a tie
     } else {
-      resultLabel.setIcon((game.getTable().getCardWhite().cardIdx > game.getTable().getCardBlack().cardIdx) ? winIcon : loseIcon);
+      resultLabel.setIcon(
+          (game.getTable().getCardWhite().cardIdx > game.getTable().getCardBlack().cardIdx) ? winIcon : loseIcon);
     }
   }
 
@@ -369,10 +378,10 @@ public class WarCardGameGUI extends JFrame {
       resultLabel.setIcon(null); // Clear result icon
       player1CardLabel.setIcon(cardBackIcon); // Reset Player 1's card
       player2CardLabel.setIcon(cardBackIcon); // Reset Player 2's card
-      player1TieCardsLabel.setVisible(false); //hide tie cards
-      player2TieCardsLabel.setVisible(false); //hide tie cards
-      player1TieCardsTextLabel.setVisible(false); //hide tie cards
-      player2TieCardsTextLabel.setVisible(false); //hide tie cards
+      player1TieCardsLabel.setVisible(false); // hide tie cards
+      player2TieCardsLabel.setVisible(false); // hide tie cards
+      player1TieCardsTextLabel.setVisible(false); // hide tie cards
+      player2TieCardsTextLabel.setVisible(false); // hide tie cards
     });
 
     // Action listener for save game
@@ -419,22 +428,21 @@ public class WarCardGameGUI extends JFrame {
     JMenuItem rulesItem = new JMenuItem("View Rules");
     rulesItem.addActionListener(e -> JOptionPane.showMessageDialog(this,
         "The objective of the game is to win all of the cards.\n" +
-        "The deck is divided evenly and randomly among the players,\n" +
-        " giving each a down stack. In unison, each player reveals the\n" +
-        " top card of their deck - this is a \"battle\" - and the player with\n" +
-        " the higher card takes both of the cards played and moves them to their stack.\n" +
-        " Aces are high, and suits are ignored.\n" +
-        "If the two cards played are of equal value,\n" +
-        " then there is a war. Both players place the next 2 cards from their pile \n" +
-        "face down and then another card face-up. The owner of the higher face-up card\n" +
-        "wins the war and adds all the cards on the table to the bottom of their deck.\n" +
-        "If the face-up cards are again equal then the battle repeats with another set of \n" +
-        "face-down/up cards. This repeats until one player's face-up card is higher than their opponent's.\n" +
-        "If a player runs out of cards during a war, that player immediately loses.\n" +
-        "In others, the player may play the last card in their deck as their face-up card for the remainder\n" +
-        "of the war or replay the game from the beginning.\n" +
-        "The game will continue until one player has collected all of the cards."
-    ));
+            "The deck is divided evenly and randomly among the players,\n" +
+            " giving each a down stack. In unison, each player reveals the\n" +
+            " top card of their deck - this is a \"battle\" - and the player with\n" +
+            " the higher card takes both of the cards played and moves them to their stack.\n" +
+            " Aces are high, and suits are ignored.\n" +
+            "If the two cards played are of equal value,\n" +
+            " then there is a war. Both players place the next 2 cards from their pile \n" +
+            "face down and then another card face-up. The owner of the higher face-up card\n" +
+            "wins the war and adds all the cards on the table to the bottom of their deck.\n" +
+            "If the face-up cards are again equal then the battle repeats with another set of \n" +
+            "face-down/up cards. This repeats until one player's face-up card is higher than their opponent's.\n" +
+            "If a player runs out of cards during a war, that player immediately loses.\n" +
+            "In others, the player may play the last card in their deck as their face-up card for the remainder\n" +
+            "of the war or replay the game from the beginning.\n" +
+            "The game will continue until one player has collected all of the cards."));
     rulesMenu.add(rulesItem);
     menuBar.add(rulesMenu);
 
@@ -442,21 +450,22 @@ public class WarCardGameGUI extends JFrame {
     JMenu aboutMenu = new JMenu("About");
     JMenuItem aboutItem = new JMenuItem("About Us");
     aboutItem.addActionListener(e -> {
-        JLabel label = new JLabel("<html>Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova,<br>" +
-                "Ömer Duran, Danylo Bazalinskyi, G. V.<br><br>" +
-                "<a href='https://github.com/ELLEONEL10/CardGame'>CLICK HERE</a> for GitHub Repo.</html>");
-        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        label.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame")); // Open GitHub repo in browser
-                } catch (Exception ex) {
-                    ex.printStackTrace(); // Print any errors
-                }
-            }
-        });
-        JOptionPane.showMessageDialog(this, label, "About Us", JOptionPane.INFORMATION_MESSAGE);
+      JLabel label = new JLabel("<html>Developed by: Fadi Abbara, Anas Zahran, Liana Mikhailova,<br>" +
+          "Ömer Duran, Danylo Bazalinskyi, G. V.<br><br>" +
+          "<a href='https://github.com/ELLEONEL10/CardGame'>CLICK HERE</a> for GitHub Repo.</html>");
+      label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      label.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+          try {
+            Desktop.getDesktop().browse(new URI("https://github.com/ELLEONEL10/CardGame")); // Open GitHub repo in
+                                                                                            // browser
+          } catch (Exception ex) {
+            ex.printStackTrace(); // Print any errors
+          }
+        }
+      });
+      JOptionPane.showMessageDialog(this, label, "About Us", JOptionPane.INFORMATION_MESSAGE);
     });
     aboutMenu.add(aboutItem);
     menuBar.add(aboutMenu);
