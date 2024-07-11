@@ -61,6 +61,10 @@ public class Game implements Serializable {
       return cardBlack;
     }
 
+    public int getInvisible(){
+      return table.invisible.size();
+    }
+
     /**
      * Get the amount of cards in player's deck
      * Returns -1 if {@link game.EventQueue.Player} specified wrong
